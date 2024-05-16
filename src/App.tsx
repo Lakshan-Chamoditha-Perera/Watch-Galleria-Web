@@ -1,19 +1,17 @@
 import { Button } from "@nextui-org/react";
 import "./App.css";
 import React from "react";
+import Header from "./components/Header";
 
 
 function App() {
 
   return (
-    <div>
-      <Button color="primary" onClick={() => {
-        alert('Hello World')
-      }}>
-        Button
-      </Button>
-    </div>
+    <>
+      <Header />
+    </>
   );
 }
 
 export default App;
+

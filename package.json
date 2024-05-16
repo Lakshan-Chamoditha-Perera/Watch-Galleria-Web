@@ -1,5 +1,5 @@
 {
-  "name": "watchgalleria",
+  "name": "timely",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -17,6 +17,8 @@
     "framer-motion": "^11.2.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-icons": "^5.2.1",
+    "react-scroll": "^1.9.0",
     "typescript": "^5.4.5"
   },
   "devDependencies": {
