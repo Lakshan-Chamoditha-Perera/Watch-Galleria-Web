@@ -1,6 +1,7 @@
 /* Header.css */
 .header-container {
   position: fixed;
+  border: 2px solid red;
   display: grid;
   grid-template-columns: 1fr 5fr 3fr;
   align-items: center;
@@ -9,10 +10,12 @@
   padding: 0 13.33vw;
   color: white;
   background-color: #07010d;
+  top: 0;
+  margin-bottom: 50px;
 }
 
 .logo {
-    max-height: max-content;
+  max-height: max-content;
   font-size: 32px;
   font-weight: bold;
 }
