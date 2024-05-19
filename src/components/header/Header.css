@@ -1,7 +1,7 @@
 /* Header.css */
 .header-container {
   position: fixed;
-  border: 2px solid red;
+  /* border: 2px solid red; */
   display: grid;
   grid-template-columns: 1fr 5fr 3fr;
   align-items: center;
@@ -11,7 +11,8 @@
   color: white;
   background-color: #07010d;
   top: 0;
-  margin-bottom: 50px;
+  margin-bottom: 100px;
+  z-index: 1000;
 }
 
 .logo {
@@ -44,7 +45,7 @@
   padding: 0 10px;
   cursor: pointer;
   transition: color 0.3s ease-in-out;
-  font-size: 15xp;
+  font-size: 15px;
   font-weight: 500;
   /* border: 2px solid red; */
   height: 100%;

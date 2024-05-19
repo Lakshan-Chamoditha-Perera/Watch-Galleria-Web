@@ -1,19 +1,16 @@
-import { Button } from "@nextui-org/react";
-import "./App.css";
 import React from "react";
+import "./App.css";
 import Header from "./components/header/Header";
-import Products from "./components/cards/simple-product/Products";
-
+import Common from "./views/Common";
 
 function App() {
-
-  return (
-    <>
-      <Header />
-      <Products/>
-    </>
-  );
+    return (
+        <div>
+            <Header/>
+            <div className="w-full h-[8vh]"></div>
+            <Common/>
+        </div>
+    );
 }
 
 export default App;
-
