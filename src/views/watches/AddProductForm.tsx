@@ -38,20 +38,21 @@ const AddProductForm = () => {
   };
 
   return (
-    <div className="px-[13.33vw] bg-[#F8F8F9]">
-      <Box p={4}>
-        <Typography className="text-left" variant="h4" component="h1" gutterBottom>
+    <div className=" bg-[#F8F8F9] px-[13.33vw] flex justify-center">
+      <Box className='p-3 border w-full border-red-400 '>
+        <Typography className="text-left" fontWeight="bold" variant="h4" component="h1" gutterBottom>
           Manage Products
         </Typography>
-        <Typography className="text-left" variant="subtitle1" gutterBottom>
+        <Typography className="text-left " variant="subtitle1" gutterBottom>
           Add your product for your customers
         </Typography>
 
-        <Box component="form" className="mt-5" onSubmit={handleSubmit} noValidate autoComplete="off">
-          <Grid container spacing={4}>
-            <Grid item xs={12} md={6}>
+        <Box component="form" className="mt-3 p-3 bg-[#FEFEFF] rounded" onSubmit={handleSubmit} noValidate autoComplete="off" >
+          <Grid container className='bg-[#FEFEFF] justify-center '>
+
+            <Grid className='p-3' item xs={12} md={6} >
               <Box className='bg-[#FEFEFF]' mb={4} >
-                <Box p={2} borderRadius={2}>
+                <Box p={2} borderRadius={2} className='border rounded'>
                   <Typography fontWeight="bold" variant="h6" component="h2" gutterBottom className="text-left">
                     Basic Information
                   </Typography>
@@ -80,7 +81,7 @@ const AddProductForm = () => {
                   />
                 </Box>
               </Box>
-              <Box className='bg-[#FEFEFF]' mb={4}>
+              <Box className='bg-[#FEFEFF] border rounded' mb={4}>
                 <Box p={2} borderRadius={2}>
                   <Typography fontWeight="bold" variant="h6" component="h2" gutterBottom className="text-left">
                     Category
@@ -96,7 +97,7 @@ const AddProductForm = () => {
                   </FormControl>
                 </Box>
               </Box>
-              <Box className='bg-[#FEFEFF]' mb={4}>
+              <Box className='bg-[#FEFEFF] border rounded' mb={4}>
                 <Box p={2} borderRadius={2}>
                   <Typography fontWeight="bold" variant="h6" component="h2" gutterBottom className="text-left">
                     Price & Quantity
@@ -127,9 +128,9 @@ const AddProductForm = () => {
               </Box>
             </Grid>
 
-            <Grid item xs={12} md={6}>
+            <Grid className='p-3' item xs={12} md={6}>
               <Box mb={4}>
-                <Box p={2} className='bg-[#FEFEFF]' borderRadius={2}>
+                <Box p={2} className='bg-[#FEFEFF] border rounded' borderRadius={2}>
                   <Typography fontWeight="bold" variant="h6" component="h2" gutterBottom className="text-left">
                     Product Image
                   </Typography>
@@ -160,7 +161,7 @@ const AddProductForm = () => {
                 </Box>
               </Box>
               <Box mb={4}>
-                <Box p={2} className='bg-[#FEFEFF]' borderRadius={2}>
+                <Box p={2} className='bg-[#FEFEFF]  border rounded' borderRadius={2}>
                   <Typography fontWeight="bold" variant="h6" component="h2" gutterBottom className="text-left">
                     Select Size
                   </Typography>
@@ -186,14 +187,15 @@ const AddProductForm = () => {
               </Box>
 
               <Box mb={4}>
-                <Box p={2} className='bg-[#FEFEFF]' borderRadius={2}>
+                <Box p={2} className='bg-[#FEFEFF]  border rounded' borderRadius={2}>
                   <Typography fontWeight="bold" variant="h6" className='text-left' gutterBottom>
                     Gender
                   </Typography>
 
-                  <FormControl className='border bg-[#FEFEFF] w-fit border-red-500' component="fieldset">
+                  <FormControl className='border bg-[#FEFEFF]' component="fieldset" sx={{ width: '100%' }}>
                     <RadioGroup
-                      className='border border-red-500'
+                      sx={{ justifyContent: 'space-around', display: 'flex' }}
+                      className=' border rounded p-2 '
                       aria-label="gender"
                       name="gender"
                       value={gender}
@@ -206,26 +208,28 @@ const AddProductForm = () => {
                     </RadioGroup>
                   </FormControl>
                 </Box>
+
               </Box>
 
-              <Grid container spacing={2}>
-                <Grid item xs={4}>
+              <Grid container gap={2} className='justify-evenly border rounded p-2'>
+                <Grid item xs={3} >
                   <Button variant="contained" color="primary" type="submit" fullWidth>
                     Add Product
                   </Button>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={3}>
                   <Button variant="contained" color="secondary" fullWidth startIcon={<UpdateIcon />}>
                     Update
                   </Button>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={3}>
                   <Button variant="contained" color="error" fullWidth startIcon={<DeleteIcon />}>
                     Delete
                   </Button>
                 </Grid>
               </Grid>
             </Grid>
+
           </Grid>
         </Box>
       </Box>
