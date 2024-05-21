@@ -5,6 +5,7 @@ import Common from "./views/Common";
 import ManageProducts from "./views/watches/AddProductForm";
 import AddProductForm from "./views/watches/AddProductForm";
 import PurchesOrder from "./views/watches/PurchesOrder";
+import Footer from "./components/footer/Footer";
 
 function App() {
     return (
@@ -15,6 +16,8 @@ function App() {
             {/* <ManageProducts /> */}
             <AddProductForm />
             <PurchesOrder />
+
+            <Footer/>
         </div>
     );
 }
