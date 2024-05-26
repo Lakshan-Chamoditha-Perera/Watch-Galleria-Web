@@ -39,7 +39,7 @@ const AddProductForm = () => {
 
   return (
     <div className=" bg-[#F8F8F9] px-[13.33vw] flex justify-center">
-      <Box className='p-3 border w-full border-red-400 '>
+      <Box className='p-3 border border-red-800 w-full '>
         <Typography className="text-left" fontWeight="bold" variant="h4" component="h1" gutterBottom>
           Manage Products
         </Typography>
