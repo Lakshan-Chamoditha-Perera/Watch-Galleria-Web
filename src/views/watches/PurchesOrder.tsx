@@ -1,6 +1,4 @@
-// src/App.js
-// src/App.js
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Add, Remove, Delete } from '@mui/icons-material';
 import {
     Box,

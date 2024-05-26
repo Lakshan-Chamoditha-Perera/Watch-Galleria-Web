@@ -1,7 +1,6 @@
 // @ts-ignore
 // import React from 'react';
-import { Grid } from "@mui/material";
-import Products from "../components/cards/Products";
+import {Grid} from "@mui/material";
 
 //@ts-ignore
 import landingImg from "../assets/landing_logo.png";
@@ -11,9 +10,10 @@ import landingImg1 from "../assets/landing_logo1.png";
 import landingImg2 from "../assets/landing_logo2.png";
 //@ts-ignore
 import landingImg3 from "../assets/landing_logo3.png";
-import React from "react";
+import Products from "../components/cards/Products";
 
 const Common = () => {
+
     const images = [landingImg, landingImg1, landingImg2, landingImg3];
     const settings = {
         dots: true,
