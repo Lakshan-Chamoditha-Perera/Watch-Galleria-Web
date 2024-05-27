@@ -1,60 +1,89 @@
-import {Link} from "react-scroll";
+import { useContext } from 'react';
+import { Link as ScrollLink } from 'react-scroll';
 import './Header.css';
-import {IconButton, Stack} from "@mui/material";
-import {AiOutlineSearch} from "react-icons/ai";
-import AlarmIcon from '@mui/icons-material/Alarm';
+import { Button, IconButton, Stack } from '@mui/material';
+import { AiOutlineSearch } from 'react-icons/ai';
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import { AuthContext, useAuth } from '../../context/AuthContext';
+import Swal from "sweetalert2";
+import {useNavigate} from "react-router-dom"; // Adjust the path as needed
+
 
 const Header = () => {
+    const { user, isLogged, logout } = useAuth();
+    const navigate = useNavigate();
 
-    return (<nav className="header-container">
+    function handleLogout(e) {
+        e.preventDefault()
+        Swal.fire({
+            title: 'Are you sure you want to logout?',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                logout();
+                navigate('/signin');
+            }
+        });
+    }
+
+    return (
+        <nav className="header-container">
             <div className="logo">
                 <span>TIMELY</span>
             </div>
             <div className="nav-links">
                 <ul>
-                    <Link to="watches">
+                    <ScrollLink to="watches" smooth={true} duration={500}>
                         <li className="navlist_item">Watches</li>
-                    </Link>
-                    <Link to="instruments">
+                    </ScrollLink>
+                    <ScrollLink to="instruments" smooth={true} duration={500}>
                         <li className="navlist_item">Brands</li>
-                    </Link>
-                    <Link to="scientific">
+                    </ScrollLink>
+                    <ScrollLink to="scientific" smooth={true} duration={500}>
                         <li className="navlist_item">Mens</li>
-                    </Link>
-                    <Link to="label">
+                    </ScrollLink>
+                    <ScrollLink to="label" smooth={true} duration={500}>
                         <li className="navlist_item">Womens</li>
-                    </Link>
-                    <Link to="news">
+                    </ScrollLink>
+                    <ScrollLink to="news" smooth={true} duration={500}>
                         <li className="navlist_item">Contact</li>
-                    </Link>
+                    </ScrollLink>
                 </ul>
             </div>
             <div className="search-icons">
                 <div className="search-container">
-                    <AiOutlineSearch/>
-                    <input type="text" placeholder="Search"/>
+                    <AiOutlineSearch />
+                    <input type="text" placeholder="Search" />
                 </div>
                 <Stack direction="row" spacing={1}>
-                    <IconButton color="success" aria-label="add an alarm">
-                        <AlarmIcon/>
-                    </IconButton>
-                    {/* {isLoggedIn ? (
-            <>
-              <IconButton color="primary" aria-label="add to shopping cart">
-                <AddShoppingCartIcon />
-              </IconButton>
-              <Button color="inherit" onClick={logout}>
-                Logout
-              </Button>
-            </>
-          ) : (
-            <Button color="inherit" href="/signin">
-              Login
-            </Button>
-          )} */}
+                    {isLogged ? (
+                        <>
+                            <IconButton color="inherit" aria-label="user account">
+                                {user?.photoURL ? (
+                                    <img src={user.photoURL} alt="User Avatar" style={{ width: 30, height: 30, borderRadius: '50%' }} />
+                                ) : (
+                                    <AccountCircle />
+                                )}
+                            </IconButton>
+                            <IconButton color="primary" aria-label="add to shopping cart">
+                                <AddShoppingCartIcon />
+                            </IconButton>
+                            <Button color="inherit" href="/signin" onClick={handleLogout}>
+                                Logout
+                            </Button>
+                        </>
+                    ) : (
+                        <Button  color="inherit" href="/signin">
+                            Login
+                        </Button>
+                    )}
                 </Stack>
             </div>
-        </nav>);
+        </nav>
+    );
 };
 
 export default Header;

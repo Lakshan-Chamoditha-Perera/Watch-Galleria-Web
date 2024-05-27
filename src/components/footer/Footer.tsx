@@ -1,5 +1,4 @@
-// src/components/Footer.tsx
-
+//@ts-ignore
 import React from 'react';
 import { Box, Container, Grid, Link, Typography, IconButton } from '@mui/material';
 import FacebookIcon from '@mui/icons-material/Facebook';
