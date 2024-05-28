@@ -1,7 +1,7 @@
-// @ts-ignore
-// import React from 'react';
-import {Grid} from "@mui/material";
-
+import React, { useEffect, useState } from "react";
+import { Grid } from "@mui/material";
+import axios from "axios";
+import Swal from "sweetalert2";
 //@ts-ignore
 import landingImg from "../assets/landing_logo.png";
 //@ts-ignore
@@ -13,6 +13,31 @@ import landingImg3 from "../assets/landing_logo3.png";
 import Products from "../components/cards/Products";
 
 const Common = () => {
+    const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+        loadAllProducts();
+    }, [])
+
+    const loadAllProducts = () => {
+
+        const config = {
+            method: "get",
+            url: "http://localhost:3000/api/watch",
+        };
+
+        axios.request(config).then((res) => {
+            console.log(res.data.data);
+            setProducts(res.data.data);
+        }).catch((err) => {
+            console.log(err);
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: err.response.data.error
+            })
+        })
+    }
 
     const images = [landingImg, landingImg1, landingImg2, landingImg3];
     const settings = {
@@ -53,12 +78,13 @@ const Common = () => {
                     Aperiam, asperiores!</p>
             </div>
             <Grid container spacing={4} className="px-[13.33vw] border-t-orange-500">
-                <Grid item><Products /></Grid>
-                <Grid item><Products /></Grid>
-                <Grid item><Products /></Grid>
-                <Grid item><Products /></Grid>
-                <Grid item><Products /></Grid>
-                <Grid item><Products /></Grid>
+                {
+                    products.length > 0 && products.map((product, index) => (
+                        <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                            <Products product={product} />
+                        </Grid>
+                    ))
+                }
             </Grid>
         </div>);
 }
