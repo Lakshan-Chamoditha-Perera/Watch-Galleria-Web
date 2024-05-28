@@ -7,7 +7,11 @@ export const AuthProvider = ({ children }) => {
     const [isLogged, setIsLogged] = useState(false);
 
     const login = (userData) => {
+        console.log("------------------------------------------------------------------------------")
+        console.log("AuthProvidor : login {} ")
         setUser(userData);
+        console.log(userData)
+        console.log("------------------------------------------------------------------------------")
         setIsLogged(true);
     };
 

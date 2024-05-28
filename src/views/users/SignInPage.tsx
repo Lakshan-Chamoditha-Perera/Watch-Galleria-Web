@@ -4,6 +4,7 @@ import {useNavigate} from 'react-router-dom';
 import {GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup} from 'firebase/auth';
 import {auth} from '../../config/firebase';
 import {useAuth} from '../../context/AuthContext';
+import axios from 'axios';
 import Swal from 'sweetalert2';
 
 const SignInPage = () => {
@@ -23,23 +24,39 @@ const SignInPage = () => {
             await Swal.fire('Welcome ' + user.displayName, 'You have successfully signed in with Google.', 'success');
             navigate('/home');
         } catch (error) {
-            Swal.fire('Error!', 'Invalid email or password', 'error')
+            await Swal.fire('Error!', 'An error occurred while signing in with Google', 'error')
+
         }
     };
 
     const handleSignInWithGoogle = async (e) => {
         e.preventDefault();
+        console.log("SignInPage : HandleSignInWithGoogle {}")
         try {
             const provider = new GoogleAuthProvider();
             const result = await signInWithPopup(auth, provider);
             const user = result.user;
-            await Swal.fire('Welcome ' + user.displayName, 'You have successfully signed in with Google.', 'success');
-            login(user);
-            navigate('/home');
+            if (user) {
+                await axios.get('http://localhost:3000/api/user/' + user.email).then((res) => {
+                    if (res.data.status == 200) {
+                        Swal.fire('Welcome ' + user.displayName, 'You have successfully signed in.', 'success');
+                        console.log(res.data.data);
+                        login(res.data.data);
+                        navigate('/home');
+                    } else {
+                        throw res;
+                    }
+                }).catch((err) => {
+                    Swal.fire('Error!', 'An error occurred while signing in with Google', 'error')
+                })
+            } else {
+                throw new Error('User not found');
+            }
         } catch (error) {
             await Swal.fire('Error!', 'An error occurred while signing in with Google', 'error')
         }
     };
+
 
     return (<Box display="flex" height="100vh">
         <Box flex={1} display="flex" justifyContent="center" alignItems="center">
