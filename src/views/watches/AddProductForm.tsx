@@ -102,7 +102,7 @@ const AddProductForm = () => {
 
     return (<div className=" bg-[#F8F8F9] px-[13.33vw] flex justify-center">
         <Box className='p-3 border border-red-800 w-full '>
-            <Typography className="text-left" fontWeight="bold" variant="h4" component="h1" gutterBottom>
+            <Typography className="text-left" fontWeight="bold text-[48px]" variant="h4" component="h1" gutterBottom>
                 Manage Products
             </Typography>
             <Typography className="text-left " variant="subtitle1" gutterBottom>

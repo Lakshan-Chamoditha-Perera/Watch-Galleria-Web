@@ -1,16 +1,20 @@
-import {Link as ScrollLink} from 'react-scroll';
+import React from 'react';
+import { Link as ScrollLink } from 'react-scroll';
 import './Header.css';
-import {Button, IconButton, Stack} from '@mui/material';
-import {AiOutlineSearch} from 'react-icons/ai';
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import { Button, IconButton, Stack } from '@mui/material';
+import { AiOutlineSearch } from 'react-icons/ai';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import {useAuth} from '../../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import Swal from "sweetalert2";
-import {useNavigate} from "react-router-dom"; // Adjust the path as needed
+import { useNavigate } from "react-router-dom"; 
 
 
 const Header = () => {
-    const {user, isLogged, logout} = useAuth();
+
+    // @ts-ignore
+    const { user, isLogged, logout } = useAuth();
     const navigate = useNavigate();
 
     function handleLogout(e) {
@@ -58,8 +62,8 @@ const Header = () => {
         </div>
         <div className="search-icons">
             <div className="search-container">
-                <AiOutlineSearch/>
-                <input type="text" placeholder="Search"/>
+                <AiOutlineSearch />
+                <input type="text" placeholder="Search" />
             </div>
             <Stack direction="row" spacing={1}>
                 {isLogged ? (<>
@@ -68,14 +72,14 @@ const Header = () => {
                         navigate('/home');
                     }}>
                         {user?.photoURL ? (<img src={user.photoURL} alt="User Avatar"
-                                                style={{width: 30, height: 30, borderRadius: '50%'}}/>) : (
-                            <AccountCircle/>)}
+                            style={{ width: 30, height: 30, borderRadius: '50%' }} />) : (
+                            <AccountCircle />)}
                     </IconButton>
                     <IconButton color="primary" aria-label="add to shopping cart" onClick={(e) => {
                         e.preventDefault();
                         navigate('/purchases');
                     }}>
-                        <AddShoppingCartIcon/>
+                        <ShoppingCartIcon />
                     </IconButton>
                     <Button color="inherit" href="/signin" onClick={handleLogout}>
                         Logout

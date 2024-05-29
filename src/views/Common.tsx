@@ -72,20 +72,22 @@ const Common = () => {
                     />
                 </div>
             </div>
-            <div className="border mb-10">
-                <h1 className="text-center text-4xl font-bold mt-10">Our Products</h1>
-                <p className="text-center text-lg mt-3">Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                    Aperiam, asperiores!</p>
+            <div className="border min-h-[100vh] px-[13.33vw] my-auto border-red-500" >
+                <div className="border mb-10" >
+                    <h1 className="text-center text-[48px] font-bold mt-10 ">Our Products</h1>
+                    <p className="text-center text-[32px] mt-3">Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                        Aperiam, asperiores!</p>
+                </div>
+                <Grid container justifyContent="center" className="mt-[50px] border border-orange-500">
+                    {
+                        products.length > 0 && products.map((product, index) => (
+                            <Grid item xs={12} sm={6} md={4} lg={3} key={index} className="flex justify-center">
+                                <Products product={product} />
+                            </Grid>
+                        ))
+                    }
+                </Grid>
             </div>
-            <Grid container spacing={4} className="px-[13.33vw] border-t-orange-500">
-                {
-                    products.length > 0 && products.map((product, index) => (
-                        <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-                            <Products product={product} />
-                        </Grid>
-                    ))
-                }
-            </Grid>
         </div>);
 }
 

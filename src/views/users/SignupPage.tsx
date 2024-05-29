@@ -1,9 +1,10 @@
-import {useState} from 'react';
-import {Box, Button, Link, TextField, Typography} from '@mui/material';
-import {useNavigate} from 'react-router-dom';
-import {auth} from '../../config/firebase';
+import React from 'react';
+import { useState } from 'react';
+import { Box, Button, Link, TextField, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { auth } from '../../config/firebase';
 import Swal from 'sweetalert2';
-import {createUserWithEmailAndPassword} from 'firebase/auth';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 import axios from 'axios';
 
 const SignUpPage = () => {
@@ -63,7 +64,7 @@ const SignUpPage = () => {
                 </Typography>
                 <Typography variant="body1" gutterBottom>
                     Already a member?{' '}
-                    <Link onClick={() => navigate('/signin')} style={{cursor: 'pointer'}}>
+                    <Link onClick={() => navigate('/signin')} style={{ cursor: 'pointer' }}>
                         Log in
                     </Link>
                 </Typography>
@@ -104,7 +105,7 @@ const SignUpPage = () => {
                     variant="contained"
                     color="primary"
                     size="large"
-                    sx={{mt: 2}}
+                    sx={{ mt: 2 }}
                     onClick={registerUser}
                 >
                     Create an account
@@ -124,7 +125,7 @@ const SignUpPage = () => {
                 {/*>*/}
                 {/*    Sign up with Google*/}
                 {/*</Button>*/}
-                <Typography variant="body2" color="textSecondary" align="center" sx={{mt: 2}}>
+                <Typography variant="body2" color="textSecondary" align="center" sx={{ mt: 2 }}>
                     This site is protected by reCAPTCHA and the Google{' '}
                     <Link href="#">Privacy Policy</Link> and <Link href="#">Terms of Service</Link> apply.
                 </Typography>
