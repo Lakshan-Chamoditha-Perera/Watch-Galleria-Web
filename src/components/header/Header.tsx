@@ -54,7 +54,7 @@ const Header = () => {
                     </ul>
                 )}
             </div>
-            <div className="user-actions">
+            <div className="p-0 flex flex-row justify-end h-[83%]">
                 <Stack direction="row" spacing={1} alignItems="center">
                     {isLogged ? (
                         <>

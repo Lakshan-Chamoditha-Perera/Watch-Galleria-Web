@@ -7,6 +7,7 @@ import { useCart } from '../../context/ShopContext';
 import { WatchDto } from '../../util/dto/watch.dto';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import './PurchesOrder.css';
 
 const OrderForm = () => {
     const navigate = useNavigate();

@@ -1,0 +1,50 @@
+.order-form-container {
+    background-color: #F8F8F9;
+    padding: 0 13.33vw;
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    min-height: 95vh;
+}
+
+.order-form-content {
+    padding: 20px;
+}
+
+.order-form-title {
+    text-align: left;
+    font-weight: bold;
+}
+
+.order-form {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #FEFEFF;
+    border-radius: 8px;
+}
+
+.product-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+}
+
+.order-summary {
+    padding: 16px;
+    border: 1px solid red;
+}
+
+@media screen and (max-width: 768px) {
+    .order-form-container {
+        padding: 0 5vw;
+    }
+
+    .order-form-title {
+        font-size: 24px;
+    }
+
+    .product-avatar {
+        width: 75px;
+        height: 75px;
+    }
+}
