@@ -81,7 +81,7 @@ const OrderForm = () => {
 
                 <Box component="form" width="100%" height="90%" className="mt-3 p-3  bg-[#FEFEFF] rounded" noValidate
                     autoComplete="off">
-                    <Grid container width="100%" height="100%" className='bg-[#FEFEFF] max-w-fit'>
+                    <Grid container width="100%" height="100%" className='bg-[#FEFEFF] max-w-fit border'>
 
                         <Grid className='p-3' item xs={12} md={9}>
                             <TableContainer component={Paper}>
@@ -146,8 +146,8 @@ const OrderForm = () => {
                             </TableContainer>
                         </Grid>
 
-                        <Grid className='p-3' item xs={12} md={3}>
-                            <Paper variant="outlined" sx={{ padding: 2 }}>
+                        <Grid className='p-3 min-h-fit' item xs={12} md={3}>
+                            <Paper variant="outlined" className='min-h-fit border border-red-800' sx={{ padding: 2 }}>
                                 <Typography align='left' variant="h6" gutterBottom>
                                     <strong>Order Summary</strong>
                                 </Typography>

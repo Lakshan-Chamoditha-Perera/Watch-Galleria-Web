@@ -1,9 +1,7 @@
-/* Header.css */
 .header-container {
   position: fixed;
-  /* border: 2px solid red; */
   display: grid;
-  grid-template-columns: 1fr 5fr 3fr;
+  grid-template-columns: 1fr 5fr 2fr;
   align-items: center;
   height: 8vh;
   width: 100vw;
@@ -11,12 +9,10 @@
   color: white;
   background-color: #07010d;
   top: 0;
-  margin-bottom: 100px;
   z-index: 1000;
 }
 
 .logo {
-  max-height: max-content;
   font-size: 32px;
   font-weight: bold;
 }
@@ -25,29 +21,24 @@
   display: flex;
   justify-content: center;
   height: 100%;
-  /* border: 2px solid green; */
 }
 
 .nav-links ul {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  flex-direction: row;
   height: 100%;
   padding: 0;
   margin: 0;
   width: 70%;
-  /* border: 2px solid red; */
 }
 
 .navlist_item {
-  /* border: 1px solid black; */
   padding: 0 10px;
   cursor: pointer;
   transition: color 0.3s ease-in-out;
   font-size: 15px;
   font-weight: 500;
-  /* border: 2px solid red; */
   height: 100%;
 }
 
@@ -65,34 +56,17 @@
   opacity: 1;
 }
 
-.search-icons {
-  display: grid;
-  grid-template-columns: 3fr 1fr 2fr;
-  align-items: center;
-  height: 100%;
-  gap: 10px;
-  padding: 0 10px;
-  /* border: 2px solid green; */
-}
-.search-container {
-  height: 53%;
+.user-actions {
   display: flex;
   align-items: center;
-  background-color: #f5f5f5;
-  color: #07010d;
-  border-radius: 15px; /* Rounded corners */
-  padding: 0 25px; /* Padding inside the search bar */
+  gap: 10px;
+  height: 100%;
 }
 
-.search-container input {
-  border: none;
-  background: none;
-  outline: none;
-  padding-left: 5px;
-  font-size: 1rem;
-  color: #07010d;
-  height: 15px;
-  font-size: 15px;
+.user-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
 }
 
 @media screen and (max-width: 768px) {
@@ -106,16 +80,9 @@
 
   .navlist_item {
     font-size: 12px;
-    display: none;
   }
 
   .logo {
     font-size: 25px;
-  }
-
-  .search-container{
-    padding: 0 10px;
-    width: 80%;
-    /* display: none; */
   }
 }
