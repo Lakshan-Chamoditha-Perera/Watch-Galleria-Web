@@ -92,8 +92,8 @@ const Common = () => {
     };
 
     return (
-        <div className='my-6 pb-10'>
-            <div className="bg-[#f5f5f5] py-5 h-[90vh] px-[13.33vw] grid grid-cols-2">
+        <div className=' pb-10'>
+            <div className="bg-[#f5f5f5] py-5 h-[93vh] px-[13.33vw] grid grid-cols-2">
                 <div id="left_div" className="h-full bg-[#f5f5f5] p-8 flex flex-col justify-center items-start text-black">
                     <h1 className="text-8xl text-left font-bold text-black mb-1">TIMELY WATCHES</h1>
                     <h2 className="text-4xl font-bold text-[brown] mb-4">DIAL BURGUNDY</h2>

@@ -58,7 +58,7 @@ const Header = () => {
                 <Stack direction="row" spacing={1} alignItems="center">
                     {isLogged ? (
                         <>
-                            <IconButton color="inherit" aria-label="user account" onClick={() => navigate('/home')}>
+                            <IconButton color="inherit" aria-label="user account" onClick={() => navigate('/profile')}>
                                 {user?.photoURL ? (
                                     <img src={user.photoURL} alt="User Avatar" className="user-avatar" />
                                 ) : (

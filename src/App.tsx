@@ -11,6 +11,8 @@ import SignupPage from "./views/users/SignupPage";
 import Common from "./views/Common";
 import { AuthProvider } from "./context/AuthContext";
 import { ShopProvider } from "./context/ShopContext";
+import { ManageAccounts } from '@mui/icons-material';
+import ManageUserPage from './views/users/ManageUserPage';
 
 export const Context = createContext(null);
 
@@ -27,6 +29,7 @@ function App() {
                         <Route path="/home" element={<Common />} />
                         <Route path="/add-product" element={<ManageProducts />} />
                         <Route path="/purchases" element={<PurchaseOrders />} />
+                        <Route path="/profile" element={<ManageUserPage />} />
                     </Routes>
                     <Footer />
                 </Router>

@@ -74,15 +74,15 @@ const OrderForm = () => {
     const originalPrice = totalPrice + savings;
 
     return (
-        <div className='bg-[#F8F8F9] px-[13.33vw] flex justify-center mt-10 min-h-[95vh]'>
+        <div className='bg-[#F8F8F9] px-[13.33vw] flex justify-center  min-h-[95vh]'>
             <Box className='py-5'>
                 <Typography className="text-left" fontWeight="bold" variant="h4" component="h1" gutterBottom>
                     Shopping Cart
                 </Typography>
 
-                <Box component="form" width="100%" height="90%" className="mt-3 p-3  bg-[#FEFEFF] rounded" noValidate
+                <Box component="form" width="100%" className="mt-3 p-3 min-h-[90%] h-auto bg-[#FEFEFF] rounded" noValidate
                     autoComplete="off">
-                    <Grid container width="100%" height="100%" className='bg-[#FEFEFF] max-w-fit border'>
+                    <Grid container width="100%" height="100%" className='bg-[#FEFEFF] max-w-fit '>
 
                         <Grid className='p-3' item xs={12} md={9}>
                             <TableContainer component={Paper}>
