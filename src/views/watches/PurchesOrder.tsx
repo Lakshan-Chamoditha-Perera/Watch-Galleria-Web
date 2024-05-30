@@ -1,136 +1,88 @@
-import {useState} from 'react';
-import {Add, Delete, Remove} from '@mui/icons-material';
-import {
-    Avatar,
-    Box,
-    Button,
-    Grid,
-    IconButton,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    TextField,
-    Typography,
-} from '@mui/material';
+import React, { useContext, useState } from 'react';
+import { Add, Delete, NavigateBefore, Remove } from '@mui/icons-material';
+import { Avatar, Box, Button, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, TextField } from '@mui/material';
+import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
+import axios from 'axios';
+import { useCart } from '../../context/ShopContext';
+import { WatchDto } from '../../util/dto/watch.dto';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
-function PurchaseOrder() {
-    const [cartItems, setCartItems] = useState([{
-        id: 1,
-        name: 'Rolex Submariner',
-        price: 10000.00,
-        quantity: 1,
-        description: 'Stainless Steel Automatic Men\'s Watch',
-        imageUrl: 'https://via.placeholder.com/50'
-    }, {
-        id: 2,
-        name: 'Omega Speedmaster',
-        price: 4500.00,
-        quantity: 1,
-        description: 'Moonwatch Professional Chronograph',
-        imageUrl: 'https://via.placeholder.com/50'
-    }, {
-        id: 3,
-        name: 'TAG Heuer Carrera',
-        price: 3500.00,
-        quantity: 1,
-        description: 'Calibre Heuer 01 Automatic Chronograph',
-        imageUrl: 'https://via.placeholder.com/50'
-    }, {
-        id: 4,
-        name: 'Seiko Presage',
-        price: 500.00,
-        quantity: 2,
-        description: 'Automatic Dress Watch with Power Reserve Indicator',
-        imageUrl: 'https://via.placeholder.com/50'
-    }, {
-        id: 5,
-        name: 'Casio G-Shock',
-        price: 150.00,
-        quantity: 3,
-        description: 'Rugged Digital Watch with Shock Resistance',
-        imageUrl: 'https://via.placeholder.com/50'
-    },]);
+const OrderForm = () => {
+    const navigate = useNavigate();
+    const { addToCart, cart, setCart } = useCart();
+    // @ts-ignore
+    const { user } = useAuth();
+    const { enqueueSnackbar } = useSnackbar();
 
-    const handleQuantityChange = (id, delta) => {
-        setCartItems(cartItems.map(item => item.id === id && item.quantity + delta > 0 ? {
-            ...item,
-            quantity: item.quantity + delta
-        } : item));
+    // change quantity of item in cart
+    const handleQuantityChange = (itemDto: WatchDto, delta: number) => {
+        setCart(
+            cart.map(
+                item => (item.itemCode === itemDto.itemCode) && (item.addToCartQuantity + delta) <= item.quantity ? {
+                    ...item, addToCartQuantity: item.addToCartQuantity + delta
+                }
+                    : item
+            )
+        );
     };
 
-    const handleRemoveItem = (id) => {
-        setCartItems(cartItems.filter(item => item.id !== id));
+    // remove item from cart
+    const handleRemoveItem = (itemCode: string) => {
+        setCart(cart.filter(item => item.itemCode !== itemCode));
     };
 
-    const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
-    const totalPrice = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-    const shippingCost = 99.00; // Example shipping cost
-    const savings = 299.00; // Example savings
-    const tax = 799.00; // Example tax
+    // place order function
+    const handlePlaceOrder = async () => {
+        let order = {
+            userEmail: user.email,
+            itemList: cart.map(item => {
+                return {
+                    itemCode: item.itemCode,
+                    quantity: item.addToCartQuantity
+                }
+            }),
+            totalPrice: totalPrice,
+
+        };
+
+        const config = {
+            method: "post",
+            url: "http://localhost:3000/api/orders",
+            data: order,
+        };
+
+        await axios.request(config).then(response => {
+            console.log(response.data);
+            setCart([]);
+            enqueueSnackbar('Order Placed!', { variant: 'success' });
+        }).catch(error => {
+            console.error(error);
+            enqueueSnackbar(
+                'An error occurred while placing the order!',
+                { variant: 'error' }
+            );
+        });
+    }
+
+    const totalItems = cart.reduce((acc, item: WatchDto) => acc + item.addToCartQuantity, 0);
+    const totalPrice = cart.reduce((acc, item: WatchDto) => acc + item.price * item.addToCartQuantity, 0);
+    const shippingCost = 0.00;
+    const savings = 0.00;
+    const tax = 0.00;
     const originalPrice = totalPrice + savings;
 
-    return (<div className='bg-[#F8F8F9] px-[13.33vw] flex justify-center mt-10 min-h-[95vh]'>
+    return (
+        <div className='bg-[#F8F8F9] px-[13.33vw] flex justify-center mt-10 min-h-[95vh]'>
             <Box className='py-5'>
                 <Typography className="text-left" fontWeight="bold" variant="h4" component="h1" gutterBottom>
                     Shopping Cart
                 </Typography>
 
                 <Box component="form" width="100%" height="90%" className="mt-3 p-3  bg-[#FEFEFF] rounded" noValidate
-                     autoComplete="off">
+                    autoComplete="off">
                     <Grid container width="100%" height="100%" className='bg-[#FEFEFF] max-w-fit'>
-                        {/* <Grid className='p-3' item xs={12} md={3}>
-                            <Paper variant="outlined" sx={{ padding: 2 }}>
-                                <Typography variant="h6" gutterBottom>Order Summary</Typography>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={6}>
-                                        <Typography align='left' variant="body1">Original price</Typography>
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <Typography variant="body1" align="right">€{originalPrice.toFixed(2)}</Typography>
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <Typography align='left' variant="body1">Savings</Typography>
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <Typography variant="body1" align="right" color="green">-€{savings.toFixed(2)}</Typography>
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <Typography align='left' variant="body1">Store Pickup</Typography>
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <Typography variant="body1" align="right">€{shippingCost.toFixed(2)}</Typography>
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <Typography align='left' variant="body1">Tax</Typography>
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <Typography variant="body1" align="right">€{tax.toFixed(2)}</Typography>
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <Typography align='left' variant="h6">Total</Typography>
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <Typography variant="h6" align="right">€{(totalPrice + shippingCost + tax).toFixed(2)}</Typography>
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <Button variant="contained" color="primary" fullWidth>Proceed to Checkout</Button>
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <Button variant="text" color="primary" fullWidth>Continue Shopping</Button>
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <TextField fullWidth placeholder="Enter your code" label="Do you have a voucher or gift card?" variant="outlined" />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <Button variant="contained" color="primary" fullWidth>Apply Code</Button>
-                                    </Grid>
-                                </Grid>
-                            </Paper>
-                        </Grid> */}
+
                         <Grid className='p-3' item xs={12} md={9}>
                             <TableContainer component={Paper}>
                                 <Table sx={{}} aria-label="simple table">
@@ -145,10 +97,10 @@ function PurchaseOrder() {
                                                 <Typography fontWeight={"bold"}>Description</Typography>
                                             </TableCell>
                                             <TableCell align="right">
-                                                <Typography fontWeight={"bold"}>Quantity</Typography>
+                                                <Typography fontWeight={"bold"}>Price</Typography>
                                             </TableCell>
                                             <TableCell align="right">
-                                                <Typography fontWeight={"bold"}>Price</Typography>
+                                                <Typography fontWeight={"bold"}>Quantity</Typography>
                                             </TableCell>
                                             <TableCell align="right">
                                                 <Typography fontWeight={"bold"}>Options</Typography>
@@ -156,51 +108,61 @@ function PurchaseOrder() {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {cartItems.map((row) => (<TableRow key={row.id}
-                                                                           sx={{'&:last-child td, &:last-child th': {border: 0}}}>
-                                                <TableCell align="left">
-                                                    <Avatar variant="square" src={row.imageUrl} alt={row.name}
-                                                            sx={{width: 100, height: 100, borderRadius: 1}}/>
-                                                </TableCell>
-                                                <TableCell align="left">
-                                                    <Typography variant="body1"
-                                                                fontWeight="bold">{row.name}</Typography>
-                                                    <Typography variant="body2">{row.description}</Typography>
-                                                </TableCell>
-                                                <TableCell align="right">€{row.price.toFixed(2)}</TableCell>
-                                                <TableCell align="right">
-                                                    <IconButton onClick={() => handleQuantityChange(row.id, -1)}
-                                                                disabled={row.quantity <= 1}>
-                                                        <Remove/>
-                                                    </IconButton>
-                                                    {row.quantity}
-                                                    <IconButton onClick={() => handleQuantityChange(row.id, 1)}>
-                                                        <Add/>
-                                                    </IconButton>
-                                                </TableCell>
-                                                <TableCell align="right">
-                                                    <IconButton onClick={() => handleRemoveItem(row.id)}>
-                                                        <Delete/>
-                                                    </IconButton>
+                                        {cart.map((item: WatchDto) => (<TableRow key={item.itemCode}
+                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                            <TableCell align="left">
+                                                <Avatar variant="square" src={item.imageUrlList[0]} alt={item.productName}
+                                                    sx={{ width: 100, height: 100, borderRadius: 1 }} />
+                                            </TableCell>
+                                            <TableCell align="left">
+                                                <Typography variant="body1"
+                                                    fontWeight="bold">{item.productName}</Typography>
+                                                <Typography variant="body2">{item.description}</Typography>
+                                            </TableCell>
+                                            <TableCell align="right">${item.price.toFixed(2)}</TableCell>
+                                            <TableCell align="right">
+                                                <IconButton onClick={() => handleQuantityChange(item, -1)}
+                                                    disabled={item.addToCartQuantity <= 1}>
+                                                    <Remove />
+                                                </IconButton>
+                                                {item.addToCartQuantity}
+                                                <IconButton onClick={() => handleQuantityChange(item, 1)}
+                                                    disabled={item.addToCartQuantity == item.quantity}>
+                                                    <Add />
+                                                </IconButton>
+                                            </TableCell>
+                                            <TableCell align="right">
+                                                <IconButton onClick={() => handleRemoveItem(item.itemCode)}>
+                                                    <Delete />
+                                                </IconButton>
+                                                <Button onClick={() => handleRemoveItem(item.itemCode)}>Remove</Button>
+                                            </TableCell>
 
-                                                    <Button onClick={() => handleRemoveItem(row.id)}>Remove</Button>
-                                                </TableCell>
-
-                                            </TableRow>
+                                        </TableRow>
 
                                         ))}
                                     </TableBody>
                                 </Table>
                             </TableContainer>
-
                         </Grid>
 
                         <Grid className='p-3' item xs={12} md={3}>
-                            <Paper variant="outlined" sx={{padding: 2}}>
+                            <Paper variant="outlined" sx={{ padding: 2 }}>
                                 <Typography align='left' variant="h6" gutterBottom>
                                     <strong>Order Summary</strong>
                                 </Typography>
                                 <Grid container spacing={2}>
+                                    <Grid item xs={6}>
+                                        <Typography align='left' variant="body1">
+                                            <strong>Total Items</strong>
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <Typography variant="body1" align="right">
+                                            <strong> {totalItems}</strong>
+
+                                        </Typography>
+                                    </Grid>
                                     <Grid item xs={6}>
                                         <Typography align='left' variant="body1">
                                             <strong>Original price</strong>
@@ -208,10 +170,11 @@ function PurchaseOrder() {
                                     </Grid>
                                     <Grid item xs={6}>
                                         <Typography variant="body1" align="right">
-                                            <strong> €{originalPrice.toFixed(2)}</strong>
+                                            <strong> ${originalPrice.toFixed(2)}</strong>
 
                                         </Typography>
                                     </Grid>
+
                                     <Grid item xs={6}>
                                         <Typography align='left' variant="body1">
                                             Savings
@@ -219,9 +182,10 @@ function PurchaseOrder() {
                                     </Grid>
                                     <Grid item xs={6}>
                                         <Typography variant="body1" align="right" color="green">
-                                            -€{savings.toFixed(2)}
+                                            ${savings.toFixed(2)}
                                         </Typography>
                                     </Grid>
+
                                     <Grid item xs={6}>
                                         <Typography align='left' variant="body1">
                                             Store Pickup
@@ -229,9 +193,10 @@ function PurchaseOrder() {
                                     </Grid>
                                     <Grid item xs={6}>
                                         <Typography variant="body1" align="right">
-                                            €{shippingCost.toFixed(2)}
+                                            ${shippingCost.toFixed(2)}
                                         </Typography>
                                     </Grid>
+
                                     <Grid item xs={6}>
                                         <Typography align='left' variant="body1">
                                             Tax
@@ -239,7 +204,7 @@ function PurchaseOrder() {
                                     </Grid>
                                     <Grid item xs={6}>
                                         <Typography variant="body1" align="right">
-                                            €{tax.toFixed(2)}
+                                            ${tax.toFixed(2)}
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={6}>
@@ -249,24 +214,31 @@ function PurchaseOrder() {
                                             </strong>
                                         </Typography>
                                     </Grid>
+
                                     <Grid item xs={6}>
                                         <Typography variant="h6" align="right">
                                             <strong>
-                                                €{(totalPrice + shippingCost + tax).toFixed(2)}
+                                                ${(totalPrice + shippingCost + tax).toFixed(2)}
                                             </strong>
                                         </Typography>
                                     </Grid>
+
+
+
                                     <Grid item xs={12}>
-                                        <Button variant="contained" color="primary" fullWidth>Proceed to
-                                            Checkout</Button>
+                                        <Button variant="contained" color="success" fullWidth onClick={handlePlaceOrder}>Place Order</Button>
                                     </Grid>
                                     <Grid item xs={12}>
-                                        <Button variant="text" color="primary" fullWidth>Continue Shopping</Button>
+                                        <Button variant="text" color="primary" fullWidth onClick={(e) => {
+                                            e.preventDefault();
+                                            navigate('/home');
+                                        }} >Continue Shopping</Button>
                                     </Grid>
                                     <Grid item xs={12}>
                                         <TextField fullWidth placeholder="Enter your code"
-                                                   label="Do you have a voucher or gift card?" variant="outlined"/>
+                                            label="Do you have a voucher or gift card?" variant="outlined" />
                                     </Grid>
+
                                     <Grid item xs={12}>
                                         <Button variant="contained" color="primary" fullWidth>Apply Code</Button>
                                     </Grid>
@@ -276,7 +248,18 @@ function PurchaseOrder() {
                     </Grid>
                 </Box>
             </Box>
-        </div>);
+        </div>
+    );
 }
 
-export default PurchaseOrder;
+export default function PurchaseOrders() {
+    return (
+        <SnackbarProvider maxSnack={3}
+            anchorOrigin={
+                { vertical: 'top', horizontal: 'right' }
+            }
+        >
+            <OrderForm />
+        </SnackbarProvider>
+    );
+}

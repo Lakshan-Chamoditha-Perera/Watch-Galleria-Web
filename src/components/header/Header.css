@@ -94,3 +94,28 @@
   height: 15px;
   font-size: 15px;
 }
+
+@media screen and (max-width: 768px) {
+  .header-container {
+    padding: 0 5vw;
+  }
+
+  .nav-links ul {
+    width: 80%;
+  }
+
+  .navlist_item {
+    font-size: 12px;
+    display: none;
+  }
+
+  .logo {
+    font-size: 25px;
+  }
+
+  .search-container{
+    padding: 0 10px;
+    width: 80%;
+    /* display: none; */
+  }
+}

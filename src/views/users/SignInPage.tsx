@@ -1,17 +1,20 @@
-import {useState} from 'react';
-import {Box, Button, Link, TextField, Typography} from '@mui/material';
-import {useNavigate} from 'react-router-dom';
-import {GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup} from 'firebase/auth';
-import {auth} from '../../config/firebase';
-import {useAuth} from '../../context/AuthContext';
+
+import React, { useState } from 'react';
+import { Box, Button, Link, TextField, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { auth } from '../../config/firebase';
+import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { access } from 'fs';
 
 const SignInPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
-    const {login} = useAuth();
+    // @ts-ignore
+    const { login, updateToken } = useAuth();
 
     const handleEmailChange = (e) => setEmail(e.target.value);
     const handlePasswordChange = (e) => setPassword(e.target.value);
@@ -21,6 +24,7 @@ const SignInPage = () => {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
             login(user);
+
             await Swal.fire('Welcome ' + user.displayName, 'You have successfully signed in with Google.', 'success');
             navigate('/home');
         } catch (error) {
@@ -35,13 +39,24 @@ const SignInPage = () => {
         try {
             const provider = new GoogleAuthProvider();
             const result = await signInWithPopup(auth, provider);
-            const user = result.user;
-            if (user) {
-                await axios.get('http://localhost:3000/api/user/' + user.email).then((res) => {
+            console.log(result)
+            if (result.user) {
+                // @ts-ignore
+                let accessToken = result.user.accessToken;
+                const config = {
+                    method: "post",
+                    url: 'http://localhost:3000/api/auth/login',
+                    //@ts-ignore
+                    data: {
+                        "accessToken": accessToken
+                    }
+                }
+                await axios.request(config).then((res) => {
                     if (res.data.status == 200) {
-                        Swal.fire('Welcome ' + user.displayName, 'You have successfully signed in.', 'success');
-                        console.log(res.data.data);
-                        login(res.data.data);
+                        let user = res.data.data.user;
+                        Swal.fire('Welcome ' + user.name + ' You have successfully signed in.', 'success');
+                        login(user);
+                        updateToken(res.data.data.token);
                         navigate('/home');
                     } else {
                         throw res;
@@ -66,7 +81,7 @@ const SignInPage = () => {
                 </Typography>
                 <Typography variant="body1" gutterBottom>
                     New to our platform?{' '}
-                    <Link onClick={() => navigate('/signup')} style={{cursor: 'pointer'}}>
+                    <Link onClick={() => navigate('/signup')} style={{ cursor: 'pointer' }}>
                         Register
                     </Link>
                 </Typography>
@@ -100,7 +115,7 @@ const SignInPage = () => {
                         variant="contained"
                         color="primary"
                         size="large"
-                        sx={{mt: 2}}
+                        sx={{ mt: 2 }}
                         onClick={handleSignIn}
                     >
                         Login
@@ -118,7 +133,7 @@ const SignInPage = () => {
                             src="https://developers.google.com/identity/images/g-logo.png"
                             width="20"
                         />}
-                        sx={{mt: 2}}
+                        sx={{ mt: 2 }}
                         onClick={handleSignInWithGoogle}
                     >
                         Sign In with Google

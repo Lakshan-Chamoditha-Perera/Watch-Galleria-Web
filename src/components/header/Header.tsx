@@ -61,10 +61,6 @@ const Header = () => {
             </ul>) : <></>}
         </div>
         <div className="search-icons">
-            <div className="search-container">
-                <AiOutlineSearch />
-                <input type="text" placeholder="Search" />
-            </div>
             <Stack direction="row" spacing={1}>
                 {isLogged ? (<>
                     <IconButton color="inherit" aria-label="user account" onClick={(e) => {

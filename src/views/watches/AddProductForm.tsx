@@ -1,14 +1,13 @@
-import { useState } from 'react';
-import { Box, Button, FormControl, FormControlLabel, Grid, InputLabel, MenuItem, Radio, RadioGroup, Select, TextField, Typography } from '@mui/material';
-import Swal from 'sweetalert2';
+import React, { useEffect, useState } from 'react';
+import { Autocomplete, Box, Button, FormControl, FormControlLabel, Grid, InputLabel, MenuItem, Radio, RadioGroup, Select, Stack, TextField, Typography } from '@mui/material';
 import axios from 'axios';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import UpdateIcon from '@mui/icons-material/Update';
 import DeleteIcon from '@mui/icons-material/Delete';
-import React from 'react';
-import { clear } from 'console';
+import { SnackbarProvider, useSnackbar } from 'notistack';
+import { WatchDto } from '../../util/dto/watch.dto';
 
-const AddProductForm = () => {
+const ManageProductForm = () => {
     const [itemCode, setItemCode] = useState('');
     const [productName, setProductName] = useState('');
     const [description, setDescription] = useState('');
@@ -19,6 +18,19 @@ const AddProductForm = () => {
     const [productDate, setProductDate] = useState('');
     const [gender, setGender] = useState('UNISEX');
     const [images, setImages] = useState<File[]>([]);
+    const [itemList, setItemList] = useState<WatchDto[]>([]);
+
+    const [disableButton, setDisableButton] = useState(false);
+
+    const { enqueueSnackbar } = useSnackbar();
+
+
+
+    useEffect(() => {
+        loadAllItemList();
+    }, []);
+
+
 
     const handleFileChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
@@ -40,9 +52,7 @@ const AddProductForm = () => {
         setGender(event.target.value);
     }
 
-    const saveItem = (e) => {
-        e.preventDefault();
-
+    const saveItem = () => {
         const formData = new FormData();
         formData.append('itemCode', itemCode);
         formData.append('productName', productName);
@@ -68,22 +78,48 @@ const AddProductForm = () => {
 
         axios.request(config).then((res) => {
             console.log(res.data);
-            Swal.fire('Success', 'Item added successfully', 'success');
+
+            enqueueSnackbar('Item added successfully', { variant: 'success' });
             clearAll();
         }).catch((err) => {
             console.log(err);
-            Swal.fire('Error', 'An error occurred while adding item', 'error');
+            enqueueSnackbar(err.response.data.error, { variant: 'error' });
         })
     }
+    const loadAllItemList = async () => {
+        await axios.get('http://localhost:3000/api/watch').then((res) => {
+            if (res.data.data) {
+
+                console.log(res.data.data);
+                const watchList = res.data.data.map((item) =>
+                    new WatchDto(
+                        item.itemCode,
+                        item.productName,
+                        item.description,
+                        item.category,
+                        item.price,
+                        item.quantity,
+                        item.rating,
+                        new Date(item.productDate),
+                        item.gender,
+                        item.imageUrlList,
+                        0
+                    ));
+
+                setItemList(watchList);
+                enqueueSnackbar('Items fetched successfully', { variant: 'success' });
+            }
+        }).catch((err) => {
+            enqueueSnackbar('Failed to fetch items', { variant: 'error' });
+        });
+    }
+
 
     const handleItemCode = (e) => {
-        if (e.target.key === 'Enter') {
-            e.preventDefault();
-            console.log('Enter key pressed')
-        } else {
-            setItemCode(e.target.value)
-            console.log(e.target.value)
-        }
+        enqueueSnackbar(e.target.value, { variant: 'info' })
+        setSelectedItem(undefined);
+        setItemCode(e.target.value)
+        setDisableButton(false);
     }
 
     function clearAll() {
@@ -100,41 +136,83 @@ const AddProductForm = () => {
     }
 
 
+    const [selectedItem, setSelectedItem] = useState<WatchDto>();
+
+    const handleOptionChange = (event, newValue) => {
+
+        let selectedItem;
+
+        itemList.map((element) => {
+            if (element.itemCode === newValue) {
+                selectedItem = element
+            }
+        });
+
+
+
+        if (selectedItem) {
+            setItemCode(selectedItem.itemCode);
+            setProductName(selectedItem.productName);
+            setDescription(selectedItem.description);
+            setCategory(selectedItem.category);
+            setPrice(selectedItem.price + '');
+            setQuantity(selectedItem.quantity);
+            setRating(selectedItem.rating);
+            setProductDate(selectedItem.productDate.toISOString().split('T')[0]);
+            setGender(selectedItem.gender);
+            setDisableButton(true);
+        }
+    };
+
+
     return (<div className=" bg-[#F8F8F9] px-[13.33vw] flex justify-center">
-        <Box className='p-3 border border-red-800 w-full '>
-            <Typography className="text-left" fontWeight="bold text-[48px]" variant="h4" component="h1" gutterBottom>
-                Manage Products
-            </Typography>
-            <Typography className="text-left " variant="subtitle1" gutterBottom>
-                Add your product for your customers
-            </Typography>
+        <Box className='p-3 w-full '>
+
+            <Box className='bg-[#FEFEFF] border rounded p-3'>
+                <Typography className="text-left border border-red-500" variant="h4" component="h1" gutterBottom>
+                    Manage Products
+                    <Typography className="text-left border" variant="subtitle1" gutterBottom>
+                        Add your product for your customers
+                    </Typography>
+                </Typography>
+            </Box>
 
             <Box component="form" className="mt-3 p-3 bg-[#FEFEFF] rounded" noValidate
                 autoComplete="off">
                 <Grid container className='bg-[#FEFEFF] justify-center '>
-
-                    <Grid className='p-3' item xs={12} md={6}>
+                    <Grid className='' item xs={12} md={6}>
                         <Box className='bg-[#FEFEFF]' mb={4}>
                             <Box p={2} borderRadius={2} className='border rounded'>
                                 <Typography fontWeight="bold" variant="h6" component="h2" gutterBottom
                                     className="text-left">
                                     Basic Information
                                 </Typography>
-                                <TextField
-                                    label="Item Code"
-                                    variant="outlined"
-                                    fullWidth
-                                    margin="normal"
-                                    required
-                                    value={itemCode}
-                                    onChange={handleItemCode}
-                                />
+                                <Stack spacing={2}>
+                                    <Autocomplete
+                                        freeSolo
+                                        disableClearable
+                                        options={itemList.map((option: WatchDto) => option.itemCode)}
+                                        onChange={handleOptionChange}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                label="Search input"
+                                                onChange={handleItemCode}
+                                                InputProps={{
+                                                    ...params.InputProps,
+                                                    type: 'search',
+                                                }}
+                                            />
+                                        )}
+                                    />
+                                </Stack>
                                 <TextField
                                     label="Product Name"
                                     variant="outlined"
                                     fullWidth
                                     margin="normal"
                                     required
+                                    value={productName}
                                     onChange={(e) => {
                                         setProductName(e.target.value)
                                     }}
@@ -147,12 +225,15 @@ const AddProductForm = () => {
                                     multiline
                                     rows={4}
                                     required
+                                    value={description}
                                     onChange={(e) => {
                                         setDescription(e.target.value)
                                     }}
                                 />
                             </Box>
                         </Box>
+
+
                         <Box className='bg-[#FEFEFF] border rounded' mb={4}>
                             <Box p={2} borderRadius={2}>
                                 <Typography fontWeight="bold" variant="h6" component="h2" gutterBottom
@@ -173,6 +254,8 @@ const AddProductForm = () => {
                                 </FormControl>
                             </Box>
                         </Box>
+
+
                         <Box className='bg-[#FEFEFF] border rounded' mb={4}>
                             <Box p={2} borderRadius={2}>
                                 <Typography fontWeight="bold" variant="h6" component="h2" gutterBottom
@@ -182,12 +265,14 @@ const AddProductForm = () => {
                                 <Grid container spacing={2}>
                                     <Grid item xs={6}>
                                         <TextField
+                                            value={price}
                                             label="Price"
-                                            variant="outlined"
                                             fullWidth
+                                            variant="outlined"
                                             margin="normal"
                                             type="number"
                                             required
+
                                             onChange={(e) => {
                                                 setPrice(e.target.value)
                                             }}
@@ -195,6 +280,7 @@ const AddProductForm = () => {
                                     </Grid>
                                     <Grid item xs={6}>
                                         <TextField
+                                            value={quantity}
                                             label="Quantity"
                                             variant="outlined"
                                             fullWidth
@@ -244,6 +330,7 @@ const AddProductForm = () => {
                                                     <AddPhotoAlternateIcon />
                                                 )}
                                                 <input
+
                                                     type="file"
                                                     accept="image/*"
                                                     hidden
@@ -260,6 +347,8 @@ const AddProductForm = () => {
                                 </Grid>
                             </Box>
                         </Box>
+
+                        {/* Size and Date */}
                         <Box mb={4}>
                             <Box p={2} className='bg-[#FEFEFF]  border rounded' borderRadius={2}>
                                 <Typography fontWeight="bold" variant="h6" component="h2"
@@ -268,6 +357,7 @@ const AddProductForm = () => {
                                     Select Size
                                 </Typography>
                                 <TextField
+                                    value={rating}
                                     label="Ratings 1-5"
                                     variant="outlined"
                                     fullWidth
@@ -278,6 +368,7 @@ const AddProductForm = () => {
                                     }}
                                 />
                                 <TextField
+                                    value={productDate}
                                     label="Product Date"
                                     variant="outlined"
                                     fullWidth
@@ -294,6 +385,7 @@ const AddProductForm = () => {
                             </Box>
                         </Box>
 
+                        {/* Gender */}
                         <Box mb={4}>
                             <Box p={2} className='bg-[#FEFEFF]  border rounded' borderRadius={2}>
                                 <Typography fontWeight="bold" variant="h6" className='text-left'
@@ -304,6 +396,7 @@ const AddProductForm = () => {
                                 <FormControl className='border bg-[#FEFEFF]' component="fieldset"
                                     sx={{ width: '100%' }}>
                                     <RadioGroup
+
                                         sx={{ justifyContent: 'space-around', display: 'flex' }}
                                         className=' border rounded p-2 '
                                         aria-label="gender"
@@ -323,32 +416,44 @@ const AddProductForm = () => {
                             </Box>
                         </Box>
 
+                        {/* buttons */}
                         <Grid container gap={2} className='justify-evenly border rounded p-2'>
                             <Grid item xs={3}>
-                                <Button onClick={saveItem} variant="contained" color="primary" type="submit" fullWidth>
+                                <Button disabled={disableButton} onClick={saveItem} variant="contained" color="primary" type="submit" fullWidth>
                                     Add Product
                                 </Button>
                             </Grid>
                             <Grid item xs={3}>
-                                <Button variant="contained" color="secondary" fullWidth
+                                <Button disabled={!disableButton} variant="contained" color="secondary" fullWidth
                                     startIcon={<UpdateIcon />}>
                                     Update
                                 </Button>
                             </Grid>
                             <Grid item xs={3}>
-                                <Button variant="contained" color="error" fullWidth
+                                <Button disabled={!disableButton} variant="contained" color="error" fullWidth
                                     startIcon={<DeleteIcon />}>
                                     Delete
                                 </Button>
                             </Grid>
                         </Grid>
                     </Grid>
+
                 </Grid>
             </Box>
         </Box>
     </div>)
+
 };
 
-export default AddProductForm;
-
+export default function ManageProducts() {
+    return (
+        <SnackbarProvider maxSnack={3}
+            anchorOrigin={
+                { vertical: 'top', horizontal: 'right' }
+            }
+        >
+            <ManageProductForm />
+        </SnackbarProvider>
+    );
+}
 

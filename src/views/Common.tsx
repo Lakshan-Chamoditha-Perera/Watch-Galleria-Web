@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Grid } from "@mui/material";
+import { Button, ButtonGroup, Grid } from "@mui/material";
 import axios from "axios";
 import Swal from "sweetalert2";
 //@ts-ignore
@@ -59,10 +59,10 @@ const Common = () => {
                         This attractive Komono Magnus watch is made from stainless steel and is fitted with an
                         analogue quartz movement. It is fitted with a brown leather strap and has a white dial.
                     </p>
-                    <button
+                    {/* <button
                         className="border border-black py-2 px-6 bg-white text-black font-semibold hover:bg-black hover:text-white transition-colors duration-300">
                         GET STARTED
-                    </button>
+                    </button> */}
                 </div>
                 <div className="bg-[#f5f5f5] flex justify-center items-center">
                     <img
@@ -72,16 +72,24 @@ const Common = () => {
                     />
                 </div>
             </div>
-            <div className="border min-h-[100vh] px-[13.33vw] my-auto border-red-500" >
-                <div className="border mb-10" >
+            <div className=" min-h-[100vh] px-[13.33vw] my-auto" >
+                <div className="" >
                     <h1 className="text-center text-[48px] font-bold mt-10 ">Our Products</h1>
                     <p className="text-center text-[32px] mt-3">Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                        Aperiam, asperiores!</p>
+                        Aperiam, asperiores</p>
                 </div>
-                <Grid container justifyContent="center" className="mt-[50px] border border-orange-500">
+                <div className="h-auto rounded-[30px] bg-white border mb-20" >
+                    <ButtonGroup className="w-full" variant="text" color="primary" aria-label="text primary button group">
+                        <Button>ALL</Button>
+                        <Button>MENS</Button>
+                        <Button>WOMENS</Button>
+
+                    </ButtonGroup>
+                </div>
+                <Grid container spacing={2} justifyContent="center" className="mt-[50px]">
                     {
                         products.length > 0 && products.map((product, index) => (
-                            <Grid item xs={12} sm={6} md={4} lg={3} key={index} className="flex justify-center">
+                            <Grid item xs={12} sm={6} md={3} lg={3} key={index} className="flex justify-center m-2">
                                 <Products product={product} />
                             </Grid>
                         ))

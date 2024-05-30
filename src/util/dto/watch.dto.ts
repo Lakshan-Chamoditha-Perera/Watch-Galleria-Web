@@ -8,11 +8,11 @@ export class WatchDto {
     quantity: number;
     rating: number;
     productDate: Date;
-    gender: Gender;
+    gender: string;
     imageUrlList: string[];
     addToCartQuantity: number;
 
-    constructor(itemCode: string, productName: string, description: string, category: Category, price: number, quantity: number, rating: number, productDate: Date, gender: Gender, imageUrlList: string[], addToCartQuantity: number) {
+    constructor(itemCode: string, productName: string, description: string, category: Category, price: number, quantity: number, rating: number, productDate: Date, gender: string, imageUrlList: string[], addToCartQuantity: number) {
         this.itemCode = itemCode;
         this.productName = productName;
         this.description = description;
@@ -33,8 +33,4 @@ export enum Category {
     SPORT = "SPORT",
     CASUAL = "CASUAL",
     SMART = "SMART"
-}
-
-export enum Gender {
-    UNISEX, MALE, FEMALE
 }
