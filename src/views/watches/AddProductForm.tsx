@@ -3,6 +3,7 @@ import { Autocomplete, Box, Button, FormControl, FormControlLabel, Grid, InputLa
 import axios from 'axios';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import UpdateIcon from '@mui/icons-material/Update';
+import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { SnackbarProvider, useSnackbar } from 'notistack';
 import { WatchDto } from '../../util/dto/watch.dto';
@@ -52,6 +53,7 @@ const ManageProductForm = () => {
         setGender(event.target.value);
     }
 
+    // SAVE ITEM
     const saveItem = () => {
         const formData = new FormData();
         formData.append('itemCode', itemCode);
@@ -86,10 +88,31 @@ const ManageProductForm = () => {
             enqueueSnackbar(err.response.data.error, { variant: 'error' });
         })
     }
+
+    //DELETE ITEM
+    const deleteItem = () => {
+        if (selectedItem) {
+            axios.delete(`http://localhost:3000/api/watch/${itemCode}`).then((res) => {
+                if (res.status === 200) {
+                    enqueueSnackbar('Item deleted successfully', { variant: 'success' });
+                    clearAll();
+                    loadAllItemList();
+                } else {
+                    enqueueSnackbar('Failed to delete item', { variant: 'error' });
+                }
+            }).catch((err) => {
+                console.log(err);
+                enqueueSnackbar(err.response.data.error, { variant: 'error' });
+            })
+        } else {
+            enqueueSnackbar('Please select an item to delete', { variant: 'error' });
+        }
+    }
+
+    // GET ALL ITEMS
     const loadAllItemList = async () => {
         await axios.get('http://localhost:3000/api/watch').then((res) => {
             if (res.data.data) {
-
                 console.log(res.data.data);
                 const watchList = res.data.data.map((item) =>
                     new WatchDto(
@@ -107,7 +130,6 @@ const ManageProductForm = () => {
                     ));
 
                 setItemList(watchList);
-                enqueueSnackbar('Items fetched successfully', { variant: 'success' });
             }
         }).catch((err) => {
             enqueueSnackbar('Failed to fetch items', { variant: 'error' });
@@ -141,13 +163,14 @@ const ManageProductForm = () => {
     const handleOptionChange = (event, newValue) => {
 
         let selectedItem;
-
         itemList.map((element) => {
             if (element.itemCode === newValue) {
                 selectedItem = element
+                enqueueSnackbar(selectedItem.itemCode + '', { variant: 'info' });
             }
         });
 
+        setSelectedItem(selectedItem);
 
 
         if (selectedItem) {
@@ -419,8 +442,10 @@ const ManageProductForm = () => {
                         {/* buttons */}
                         <Grid container gap={2} className='justify-evenly border rounded p-2'>
                             <Grid item xs={3}>
-                                <Button disabled={disableButton} onClick={saveItem} variant="contained" color="primary" type="submit" fullWidth>
-                                    Add Product
+                                <Button disabled={disableButton} variant="contained" color="primary" type="submit" fullWidth
+                                    startIcon={<AddIcon />}
+                                    onClick={saveItem}>
+                                    Add
                                 </Button>
                             </Grid>
                             <Grid item xs={3}>
@@ -431,7 +456,9 @@ const ManageProductForm = () => {
                             </Grid>
                             <Grid item xs={3}>
                                 <Button disabled={!disableButton} variant="contained" color="error" fullWidth
-                                    startIcon={<DeleteIcon />}>
+                                    startIcon={<DeleteIcon />}
+                                    onClick={deleteItem}
+                                >
                                     Delete
                                 </Button>
                             </Grid>
