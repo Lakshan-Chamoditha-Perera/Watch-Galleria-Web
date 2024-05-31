@@ -4,7 +4,7 @@ import { AiFillStar } from 'react-icons/ai';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import {Button, IconButton} from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import { useCart } from "../../context/ShopContext";
 import Swal from "sweetalert2";
@@ -73,8 +73,9 @@ const Products = ({ product }) => {
                 </div>
                 <div className="text-[25px] font-bold text-black">$ {product.price.toFixed(2)} </div>
                 <div className="flex justify-end w-full">
-                    <Button color="primary" aria-label="add to shopping cart" onClick={handleAddToCart}>
-                        <AddShoppingCartIcon sx={{ fontSize: 30 }} />
+                    <Button variant="outlined" size="small" aria-label="add to shopping cart" onClick={handleAddToCart}>
+                        {/* <AddShoppingCartIcon fontSize="small" /> */}
+                        add to cart
                     </Button>
                 </div>
             </CardFooter>

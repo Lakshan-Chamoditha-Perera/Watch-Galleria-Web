@@ -58,17 +58,19 @@ const SignInPage = () => {
                         login(user);
                         updateToken(res.data.data.token);
                         navigate('/home');
+                    } else if (res.data.status == 404) {
+                        Swal.fire('Error!', 'User not found', 'error');
                     } else {
-                        throw res;
+                        throw new Error('An error occurred while signing in with Google');
                     }
                 }).catch((err) => {
-                    Swal.fire('Error!', 'An error occurred while signing in with Google', 'error')
+                   throw new Error('An error occurred while signing in with Google');
                 })
             } else {
                 throw new Error('User not found');
             }
         } catch (error) {
-            await Swal.fire('Error!', 'An error occurred while signing in with Google', 'error')
+            await Swal.fire('Error!', error.message, 'error')
         }
     };
 

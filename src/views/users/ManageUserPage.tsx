@@ -11,6 +11,13 @@ const ManageUser = () => {
     // @ts-ignore
     const { user } = useAuth();
 
+    const [userEmail, setUserEmail] = useState('');
+    const [userName, setUserName] = useState('');
+    const [address, setAddress] = useState('');
+    const [city, setCity] = useState('');
+    const [postalCode, setPostalCode] = useState('');
+    const [createdAt, setCreatedAt] = useState('');
+    const [userProfile, setUserProfile] = useState('https://images.unsplash.com/photo-1590736969955-71cc94801759?q=80&w=2127&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
 
     const stats = [
         { number: 5, label: 'All Bookings', percentage: '35.67%', color: '#3f51b5' },
@@ -274,13 +281,31 @@ const ManageUser = () => {
         { code: 'ZW', name: 'Zimbabwe', phone: '263' },
     ];
 
+    function handleAddressChange(e) {
+        setAddress(e.target.value);
+    }
+
+    function handleCityChange(e) {
+        setCity(e.target.value);
+    }
+
+    function handlePostalCodeChange(e) {
+        setPostalCode(e.target.value);
+    }
+
+    function updateUserDetail(e) {
+        e.preventDefault();
+        enqueueSnackbar('User details updated successfully', { variant: 'success' });
+    }
+
+    //GET ALL ORDERS
     const getAllOrders = async () => {
 
         try {
             const config = {
                 method: "get",
                 // ${user.email}
-                url: `http://localhost:3000/api/orders/perera.alc2000@gmail.com`
+                url: `http://localhost:3000/api/orders/${user.email}`
             };
 
             await axios.request(config).then(response => {
@@ -296,7 +321,50 @@ const ManageUser = () => {
         }
     }
 
+    //SET USER DETAILS
+    const setUserDetails = () => {
+        console.log("Set User Details")
+        if (user) {
+            setUserEmail(user.email);
+            setUserName(user.name);
+            setAddress(user.address);
+            setCity(user.city);
+            setPostalCode(user.postalCode);
+            setUserProfile(user.profileUrl);
+            setCreatedAt(user.createdAt);
+        }
+    }
+
+    const uploadProfileImage = async (e) => {
+        enqueueSnackbar('uploading image', { variant: 'success' });
+        const file = e.target.files[0];
+        if (file) {
+            const formData = new FormData();
+            formData.append('profileImage', file);
+
+            try {
+                const response = await axios.post(`http://localhost:3000/api/users/profile_image/${user.email}`, formData);
+                setUserProfile(response.data.profileUrl);
+                console.log(response.data);
+                if(response.status == 200){
+                    console.log(response.data.data.photoURL);
+                    setUserProfile(response.data.data.photoURL);
+                }
+                enqueueSnackbar('Profile image updated successfully', { variant: 'success' });
+            } catch (error) {
+                enqueueSnackbar('Failed to upload image', { variant: 'error' });
+            }
+        }
+    };
+
+    const handleFileInputClick = (e: React.ChangeEvent<HTMLInputElement>) => {
+        enqueueSnackbar('button action triggered', { variant: 'success' });
+        const fileInput = document.getElementById('profile-image-upload');
+        fileInput?.click();
+    };
+
     useEffect(() => {
+        setUserDetails();
         getAllOrders();
     }, []);
 
@@ -315,20 +383,30 @@ const ManageUser = () => {
 
                 {/* Profile Section */}
                 <Grid item xs={12} md={4}>
-                    <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3 }}>
+                    <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3 }}
+
+                    >
                         <Avatar
-                            alt="Harriet Nunez"
-                            src="https://images.unsplash.com/photo-1590736969955-71cc94801759?q=80&w=2127&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                            alt={userName}
+                            src={userProfile}
                             sx={{ width: 120, height: 120, mb: 2 }}
                         />
-                        <Typography variant="h5" component="div" gutterBottom>
-                            Harriet Nunez
+                        <input
+                            accept="image/*"
+                            type="file"
+                            onChange={uploadProfileImage}
+                            style={{ display: 'none' }}
+                            id="profile-image-upload"
+                        />
+                        <Button variant="text" component="span" onClick={handleFileInputClick}>
+                            Upload Profile Image
+                        </Button>
+                        <Typography variant="h6" gutterBottom>
+                            {userName}
                         </Typography>
-                        <Typography className='border p-1 rounded-[13px] bg-[#EAF9EF]' variant="body2" color="textSecondary" gutterBottom>
-                            New Client
-                        </Typography>
+
                         <Typography variant="body2" color="textSecondary" gutterBottom>
-                            Member Since: 2021
+                            Member Since: {new Date(user.createdAt).toLocaleDateString()}
                         </Typography>
                         <Typography variant="body2" color="textSecondary" gutterBottom>
                             Last Seen: 2 days ago
@@ -337,30 +415,7 @@ const ManageUser = () => {
                         <CardContent sx={{ width: '100%' }}>
                             <TextField
                                 size='small'
-                                label="Email"
-                                value="runolfdir.gillian@hotmail.com"
-                                variant="outlined"
-                                fullWidth
-                                margin="normal"
-                                InputProps={{
-                                    readOnly: true,
-                                }}
-                            />
-                            <TextField
-                                size='small'
-                                label="Gender"
-                                value="Female"
-                                variant="outlined"
-                                fullWidth
-                                margin="normal"
-                                InputProps={{
-                                    readOnly: true,
-                                }}
-                            />
-                            <TextField
-                                size='small'
-                                label="Alerts"
-                                value="Allows Marketing Notifications"
+                                value={userEmail}
                                 variant="outlined"
                                 fullWidth
                                 margin="normal"
@@ -408,6 +463,7 @@ const ManageUser = () => {
                                         variant="outlined"
                                         fullWidth
                                         margin="normal"
+                                        onChange={handleAddressChange}
                                     />
                                 </Box>
                                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -420,6 +476,7 @@ const ManageUser = () => {
                                         variant="outlined"
                                         fullWidth
                                         margin="normal"
+                                        onChange={handleCityChange}
                                     />
                                 </Box>
                                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -432,6 +489,7 @@ const ManageUser = () => {
                                         variant="outlined"
                                         fullWidth
                                         margin="normal"
+                                        onChange={handlePostalCodeChange}
                                     />
                                 </Box>
 
@@ -455,7 +513,7 @@ const ManageUser = () => {
                                 </Box>
 
                                 <Box className='pt-2 flex flex-row justify-end' >
-                                    <Button size='small' variant="contained" color="primary" >
+                                    <Button size='small' variant="outlined" color="primary" onClick={updateUserDetail} >
                                         Save Changes
                                     </Button>
                                 </Box>
