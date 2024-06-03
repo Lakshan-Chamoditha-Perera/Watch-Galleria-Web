@@ -39,7 +39,7 @@ import Products from "../components/cards/Products";
 import { WatchDto } from "../util/dto/watch.dto";
 import { MenuProps } from "@nextui-org/react";
 import { ClassNames } from "@emotion/react";
-import NewsletterSignup from "../components/Newsletter";
+import NewsletterSignup from "../components/newsletter/Newsletter";
 import ContactUs from "./Contact";
 import ImageSlider from "./ImageSlider";
 
@@ -105,54 +105,59 @@ const Common = () => {
     };
 
     return (<div className=''>
-        <div className="lg:h-[93vh] md:h-auto lg:flex-row flex flex-wrap justify-between px-[13.33vw] ">
-            <div className="lg:h-full md:h-[50%] w-[40%] p-8 flex flex-col justify-center items-start text-black ">
-                <h1 className="text-8xl text-left font-bold text-black mb-1">TIMELY WATCHES</h1>
-                <h2 className="text-4xl font-bold text-[#BD9069] mb-4">
-                    Time is what we make of it    
+        <div className="sm:py-2 text-4xl flex-col lg:h-[93vh] md:h-auto lg:flex-row flex flex-wrap justify-between px-[13.33vw] ">
+
+            <div className="lg:h-full md:h-[50%] lg:w-[40%] p-8 flex flex-col justify-center items-start text-black ">
+                <h1 className="text-[48px] text-center lg:text-8xl lg:text-left font-bold text-black mb-1">TIMELY WATCHES</h1>
+                <h2 className="text-2xl w-full text-center lg:text-4xl lg:text-left font-bold text-[#BD9069] lg:mb-4 mb-5">
+                    Time is what we make of it
                 </h2>
-                <Typography className="text-left" variant="subtitle1" gutterBottom>
-                   
-                   Designed to keep a consistent movement despite the motions caused by the person's activities. 
+                <Typography className="lg:text-left " variant="subtitle1" gutterBottom>
+                    Designed to keep a consistent movement despite the motions caused by the person's activities.
                 </Typography>
             </div>
-            <div className="w-[50%] flex justify-center items-center">
-                <img src={landingImg7} alt="watch" className="z-0 h-full  object-cover" />
+
+            <div className="lg:w-[50%] flex justify-center items-center">
+                <img src={landingImg7} alt="watch" className="z-0 h-full object-cover" />
             </div>
+
         </div>
 
-        <div className="min-h-[100vh] px-[13.33vw] my-auto">
+        <div className="min-h-[100vh] px-[13.33vw] my-auto mt-20">
             <div>
-                <h1 className="shadow-sm text-[48px] font-bold mt-10">Products</h1>
+                <h1 className="shadow-sm text-4xl lg:text-[48px] font-bold lg:mt-10">Products</h1>
             </div>
 
-            <div className="h-auto flex flex-row justify-end my-10 ">
-                <ButtonGroup variant="text" color="primary" aria-label="text primary button group">
+            <div className="h-auto flex flex-col p-2 lg:flex-row lg:justify-end lg:my-10 ">
+                <ButtonGroup className="w-full justify-center lg:w-fit" variant="text" color="primary" aria-label="text primary button group">
                     <Button onClick={resetSort}>ALL</Button>
                     <Button onClick={sortItemsAscending}>Lowest to Highest</Button>
                     <Button onClick={sortItemsDescending}>Highest to Lowest</Button>
                 </ButtonGroup>
-                <FormControl aria-label="text primary " size="small" className=" border border-red-600">
-                    <InputLabel className="text-sky-400/75" color="primary" id="category-label">Category</InputLabel>
-                    <Select
-                        labelId="category-label"
-                        id="category-select"
-                        value={selectedCategory}
-                        onChange={handleCategoryChange}
-                        color="primary"
-                        className="w-[200px] ml-2"
-                        size="small"
 
-                    >
-                        <MenuItem value="">
-                            <em>All</em>
-                        </MenuItem>
-                        <MenuItem value="LUXURY">Luxury</MenuItem>
-                        <MenuItem value="CASUAL">Casual</MenuItem>
-                        <MenuItem value="SPORT">Sport</MenuItem>
-                        <MenuItem value="SMART">Smart</MenuItem>
-                    </Select>
-                </FormControl>
+                <div className="w-full lg:w-fit py-2 lg:py-0 flex justify-center ">
+                    <FormControl aria-label="text primary " size="small" className="w-[98%]">
+                        <InputLabel className="text-sky-400/75" color="primary" id="category-label">Category</InputLabel>
+                        <Select
+                            labelId="category-label"
+                            id="category-select"
+                            value={selectedCategory}
+                            onChange={handleCategoryChange}
+                            color="primary"
+                            className="lg:w-[200px] ml-2"
+                            size="small"
+
+                        >
+                            <MenuItem value="">
+                                <em>All</em>
+                            </MenuItem>
+                            <MenuItem value="LUXURY">Luxury</MenuItem>
+                            <MenuItem value="CASUAL">Casual</MenuItem>
+                            <MenuItem value="SPORT">Sport</MenuItem>
+                            <MenuItem value="SMART">Smart</MenuItem>
+                        </Select>
+                    </FormControl>
+                </div>
             </div>
 
             <Grid className="mt-[50px] flex flex-wrap gap-10 items-center justify-around">

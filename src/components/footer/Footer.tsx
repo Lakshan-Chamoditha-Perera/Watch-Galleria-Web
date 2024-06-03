@@ -9,9 +9,9 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 const Footer: React.FC = () => {
     return (
     
-        <div className=' px-[13.33vw] border-t-1 pt-3'>
+        <div className=' px-[13.33vw] border-t-1 pt-3 hidden lg:block'>
 
-            <div className='flex  flex-row justify-between' >
+            <div className='flex flex-row justify-between' >
 
                 <Grid item xs={12} sm={6} md={3}>
                     <Typography align='left' variant="h6" gutterBottom>

@@ -18,6 +18,7 @@ const ManageUser = () => {
     const [postalCode, setPostalCode] = useState('');
     const [createdAt, setCreatedAt] = useState('');
     const [userProfile, setUserProfile] = useState('');
+    
 
     const stats = [
         { number: 5, label: 'All Bookings', percentage: '35.67%', color: '#3f51b5' },
@@ -424,7 +425,7 @@ const ManageUser = () => {
                             <Avatar
                                 alt={userName}
                                 src={userProfile}
-                                sx={{ width: 120, height: 120, mb: 2 }}
+                                sx={{ width: 260, height: 260, mb: 2 }}
                             />
                             <input
                                 accept="image/*"
@@ -437,7 +438,7 @@ const ManageUser = () => {
                                 Upload Profile Image
                             </Button>
 
-                            <Typography variant="h7" gutterBottom>
+                            <Typography  gutterBottom>
                                 {userName}
                             </Typography>
 
@@ -452,6 +453,16 @@ const ManageUser = () => {
                                 <TextField
                                     size='small'
                                     value={userEmail}
+                                    variant="outlined"
+                                    fullWidth
+                                    margin="normal"
+                                    InputProps={{
+                                        readOnly: true,
+                                    }}
+                                />
+                                <TextField
+                                    size='small'
+                                    value={"+94 71 45 98 756"}
                                     variant="outlined"
                                     fullWidth
                                     margin="normal"
