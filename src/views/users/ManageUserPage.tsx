@@ -4,12 +4,12 @@ import OrderAccordian from '../../components/accordion/OrderAccordian';
 import { SnackbarProvider, useSnackbar } from 'notistack';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
-
+import { User } from '../../context/AuthContext';
 const ManageUser = () => {
     const { enqueueSnackbar } = useSnackbar();
     const [orderList, setOrderList] = useState([]);
     // @ts-ignore
-    const { user } = useAuth();
+    const { user, updateUser } = useAuth();
 
     const [userEmail, setUserEmail] = useState('');
     const [userName, setUserName] = useState('');
@@ -17,7 +17,7 @@ const ManageUser = () => {
     const [city, setCity] = useState('');
     const [postalCode, setPostalCode] = useState('');
     const [createdAt, setCreatedAt] = useState('');
-    const [userProfile, setUserProfile] = useState('https://images.unsplash.com/photo-1590736969955-71cc94801759?q=80&w=2127&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+    const [userProfile, setUserProfile] = useState('');
 
     const stats = [
         { number: 5, label: 'All Bookings', percentage: '35.67%', color: '#3f51b5' },
@@ -294,8 +294,33 @@ const ManageUser = () => {
     }
 
     function updateUserDetail(e) {
-        e.preventDefault();
-        enqueueSnackbar('User details updated successfully', { variant: 'success' });
+        console.log("Update User Details {} ")
+        //validate user details
+        if (address == '' || city == '' || postalCode == '') {
+            enqueueSnackbar('Please fill all fields', { variant: 'error' });
+            return;
+        }
+
+        //update user details
+        const updatedUser = {
+            ...user,
+            address: {
+                residentialAddress: address,
+                city: city,
+                postalCode: postalCode
+            }
+        };
+
+        axios.put(`http://localhost:3000/api/users/${user?.email}`, updatedUser).then(response => {
+            console.log(response.data.data)
+            updateUser(response.data.data);
+            setUserDetails();
+            enqueueSnackbar('User details updated successfully', { variant: 'success' });
+        }).catch(error => {
+            enqueueSnackbar('Failed to update user details', { variant: 'error' });
+        });
+
+
     }
 
     //GET ALL ORDERS
@@ -327,16 +352,21 @@ const ManageUser = () => {
         if (user) {
             setUserEmail(user.email);
             setUserName(user.name);
-            setAddress(user.address);
-            setCity(user.city);
-            setPostalCode(user.postalCode);
-            setUserProfile(user.profileUrl);
+            setAddress(user.address.residentialAddress);
+            setCity(user.address.city);
+            setPostalCode(user.address.postalCode);
+            setUserProfile(user.photoURL);
             setCreatedAt(user.createdAt);
+            if (user.address) {
+                setAddress(user.address.residentialAddress);
+                setCity(user.address.city);
+                setPostalCode(user.address.postalCode);
+            }
         }
     }
 
     const uploadProfileImage = async (e) => {
-        enqueueSnackbar('uploading image', { variant: 'success' });
+        enqueueSnackbar('Uploading image', { variant: 'info' });
         const file = e.target.files[0];
         if (file) {
             const formData = new FormData();
@@ -346,9 +376,10 @@ const ManageUser = () => {
                 const response = await axios.post(`http://localhost:3000/api/users/profile_image/${user.email}`, formData);
                 setUserProfile(response.data.profileUrl);
                 console.log(response.data);
-                if(response.status == 200){
+                if (response.status == 200) {
                     console.log(response.data.data.photoURL);
                     setUserProfile(response.data.data.photoURL);
+                    updateUser(response.data.data);
                 }
                 enqueueSnackbar('Profile image updated successfully', { variant: 'success' });
             } catch (error) {
@@ -370,67 +401,72 @@ const ManageUser = () => {
 
 
     return (
-        <Box className='bg-[#F8FAFA] px-[13.33vw]' sx={{ p: 3, minHeight: '93vh', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div className=" px-[13.33vw] my-10 flex flex-col justify-center min-h-[80vh]">
 
-            <Grid className=' mt-5 w-full px-[13.33vw] ' >
-                <Card className='inline-block text-left px-10 text-5xl bg-white w-full'>
-                    User Details
-                </Card>
-            </Grid>
+            <Box className=' rounded  p-3 glass-card'>
+                <Typography fontWeight="bold" className="text-left " variant="h3"  >
+                    Profile
+                    <Typography className="text-left" variant="subtitle1" gutterBottom>
+                        Manage user profile details
+                    </Typography>
+                </Typography>
+            </Box>
 
 
-            <Grid container className='min-h-[80vh]  mt-5 px-[13.33vw] ' spacing={3} sx={{ minHeight: 'fit' }}>
+            <Box className="mt-3 rounded" >
 
-                {/* Profile Section */}
-                <Grid item xs={12} md={4}>
-                    <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3 }}
+                <Grid container className='justify-between ' spacing={3} sx={{ minHeight: 'fit' }}>
+                    {/* Profile Section */}
+                    <Grid item xs={12} md={4}>
+                        <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3 }}
 
-                    >
-                        <Avatar
-                            alt={userName}
-                            src={userProfile}
-                            sx={{ width: 120, height: 120, mb: 2 }}
-                        />
-                        <input
-                            accept="image/*"
-                            type="file"
-                            onChange={uploadProfileImage}
-                            style={{ display: 'none' }}
-                            id="profile-image-upload"
-                        />
-                        <Button variant="text" component="span" onClick={handleFileInputClick}>
-                            Upload Profile Image
-                        </Button>
-                        <Typography variant="h6" gutterBottom>
-                            {userName}
-                        </Typography>
-
-                        <Typography variant="body2" color="textSecondary" gutterBottom>
-                            Member Since: {new Date(user.createdAt).toLocaleDateString()}
-                        </Typography>
-                        <Typography variant="body2" color="textSecondary" gutterBottom>
-                            Last Seen: 2 days ago
-                        </Typography>
-
-                        <CardContent sx={{ width: '100%' }}>
-                            <TextField
-                                size='small'
-                                value={userEmail}
-                                variant="outlined"
-                                fullWidth
-                                margin="normal"
-                                InputProps={{
-                                    readOnly: true,
-                                }}
+                        >
+                            <Avatar
+                                alt={userName}
+                                src={userProfile}
+                                sx={{ width: 120, height: 120, mb: 2 }}
                             />
-                        </CardContent>
-                    </Card>
-                </Grid>
+                            <input
+                                accept="image/*"
+                                type="file"
+                                onChange={uploadProfileImage}
+                                style={{ display: 'none' }}
+                                id="profile-image-upload"
+                            />
+                            <Button onClick={handleFileInputClick}>
+                                Upload Profile Image
+                            </Button>
+
+                            <Typography variant="h7" gutterBottom>
+                                {userName}
+                            </Typography>
+
+                            <Typography variant="body2" color="textSecondary" gutterBottom>
+                                Member Since: {user != null ? new Date(user.createdAt).toLocaleDateString() : new Date().toLocaleDateString()}
+                            </Typography>
+                            <Typography variant="body2" color="textSecondary" gutterBottom>
+                                Last Seen: 2 days ago
+                            </Typography>
+
+                            <CardContent sx={{ width: '100%' }}>
+                                <TextField
+                                    size='small'
+                                    value={userEmail}
+                                    variant="outlined"
+                                    fullWidth
+                                    margin="normal"
+                                    InputProps={{
+                                        readOnly: true,
+                                    }}
+                                />
+                            </CardContent>
+                        </Card>
+                    </Grid>
 
 
-                {/* Billing Information Section */}
-                <Grid item xs={12} md={8}>
-                    {/* <Grid container spacing={3} sx={{ maxWidth: '1200px', mb: 3 }}>
+                    {/* Billing Information Section */}
+                    <Grid item xs={12} md={8}>
+                        {/* <Grid container spacing={3} sx={{ maxWidth: '1200px', mb: 3 }}>
                         {stats.map((stat, index) => (
                             <Grid item xs={12} sm={4} key={index}>
                                 <Card sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: 2 }}>
@@ -447,57 +483,62 @@ const ManageUser = () => {
                             </Grid>
                         ))}
                     </Grid>  */}
-                    <Card sx={{ mb: 3 }}>
-                        <CardContent>
-                            <Box textAlign={'left'} sx={{ fontWeight: 'medium', }}>
-                                Billing Information
-                            </Box>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', }}>
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <Typography variant="body1" textAlign={'left'} component="div" sx={{ width: '25%' }}>
-                                        Address Line
-                                    </Typography>
-                                    <TextField
-                                        size="small"
-                                        label="No. 123, 4th Street"
-                                        variant="outlined"
-                                        fullWidth
-                                        margin="normal"
-                                        onChange={handleAddressChange}
-                                    />
-                                </Box>
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <Typography variant="body1" textAlign={'left'} component="div" sx={{ width: '25%' }}>
-                                        City
-                                    </Typography>
-                                    <TextField
-                                        size="small"
-                                        label="Colombo"
-                                        variant="outlined"
-                                        fullWidth
-                                        margin="normal"
-                                        onChange={handleCityChange}
-                                    />
-                                </Box>
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <Typography variant="body1" textAlign={'left'} component="div" sx={{ width: '25%' }}>
-                                        Postal Code
-                                    </Typography>
-                                    <TextField
-                                        size="small"
-                                        label="12345"
-                                        variant="outlined"
-                                        fullWidth
-                                        margin="normal"
-                                        onChange={handlePostalCodeChange}
-                                    />
-                                </Box>
+                        <Card sx={{ mb: 3 }}>
+                            <CardContent>
 
-                                <Box className=' py-2' sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <Typography variant="body1" textAlign={'left'} component="div" sx={{ width: '25%' }}>
-                                        Country
-                                    </Typography>
-                                    {/* <Autocomplete
+                                <Typography fontWeight="bold" variant="h5" component="h2" gutterBottom
+                                    className="text-left">
+                                    Billing Information
+                                </Typography>
+                                <Box sx={{ display: 'flex', flexDirection: 'column', }}>
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <Typography variant="body1" textAlign={'left'} component="div" sx={{ width: '25%' }}>
+                                            Address Line
+                                        </Typography>
+                                        <TextField
+                                            size="small"
+                                            label="No. 123, 4th Street"
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            value={address}
+                                            onChange={handleAddressChange}
+                                        />
+                                    </Box>
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <Typography variant="body1" textAlign={'left'} component="div" sx={{ width: '25%' }}>
+                                            City
+                                        </Typography>
+                                        <TextField
+                                            size="small"
+                                            label="Colombo"
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            value={city}
+                                            onChange={handleCityChange}
+                                        />
+                                    </Box>
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <Typography variant="body1" textAlign={'left'} component="div" sx={{ width: '25%' }}>
+                                            Postal Code
+                                        </Typography>
+                                        <TextField
+                                            size="small"
+                                            label="12345"
+                                            variant="outlined"
+                                            fullWidth
+                                            margin="normal"
+                                            value={postalCode}
+                                            onChange={handlePostalCodeChange}
+                                        />
+                                    </Box>
+
+                                    <Box className=' py-2' sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        {/* <Typography variant="body1" textAlign={'left'} component="div" sx={{ width: '25%' }}>
+                                            Country
+                                        </Typography> */}
+                                        {/* <Autocomplete
                                         fullWidth
                                         size='small'
                                         id="country-customized-option-demo"
@@ -510,38 +551,40 @@ const ManageUser = () => {
 
                                         renderInput={(params) => <TextField {...params} label="" />}
                                     /> */}
-                                </Box>
+                                    </Box>
 
-                                <Box className='pt-2 flex flex-row justify-end' >
-                                    <Button size='small' variant="outlined" color="primary" onClick={updateUserDetail} >
-                                        Save Changes
-                                    </Button>
+                                    <Box className='pt-2 flex flex-row justify-end' >
+                                        <Button size='small' variant="outlined" color="primary" onClick={updateUserDetail} >
+                                            Save Changes
+                                        </Button>
+                                    </Box>
                                 </Box>
-                            </Box>
-                        </CardContent>
-                    </Card>
+                            </CardContent>
+                        </Card>
 
-                    <Card>
-                        <CardContent>
-                            <Box textAlign={'left'} sx={{ fontWeight: 'medium', }}>
-                                Recent Orders
-                            </Box>
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                                <Typography variant="body2" color="textSecondary">
-                                    Total Orders : {orderList.length}
+                        <Card>
+                            <CardContent>
+
+                                <Typography fontWeight="bold" variant="h5" component="h2" gutterBottom
+                                    className="text-left">
+                                    Recent Orders
                                 </Typography>
-                                {/* <Button variant="outlined" size="small">Invoices</Button> */}
-                                {/* total */}
-                            </Box>
-                            {
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                                    <Typography variant="body2" color="textSecondary">
+                                        Total Orders : {orderList.length}
+                                    </Typography>
+                                    <Button variant="outlined" size="small">Print</Button>
+                                    {/* total */}
+                                </Box>
+                                {
 
-                                (orderList && orderList.length > 0) ? orderList.map((appointment, index) => (
-                                    <Box
-                                        key={index}
-                                        className=' py-2'
-                                    >
-                                        <OrderAccordian element={appointment} />
-                                        {/* <Box>
+                                    (orderList && orderList.length > 0) ? orderList.map((appointment, index) => (
+                                        <Box
+                                            key={index}
+                                            className=' py-2'
+                                        >
+                                            <OrderAccordian element={appointment} />
+                                            {/* <Box>
                                         <Typography variant="body1">{appointment.date}</Typography>
                                         <Typography variant="body2" color="textSecondary">{appointment.service}</Typography>
                                     </Box>
@@ -553,36 +596,37 @@ const ManageUser = () => {
                                         <Typography variant="body2" color="textSecondary">{appointment.rate}</Typography>
                                     </Box> */}
 
-                                    </Box>
+                                        </Box>
 
-                                )) : <Card className='' sx={{ maxWidth: 345, textAlign: 'center', padding: 2 }}>
-                                    <CardMedia
-                                        component="img"
-                                        alt="No Orders"
-                                        height="140"
-                                        image="https://cdn.dribbble.com/users/2241516/screenshots/6444657/________.gif" // Replace with your image URL
-                                        title="No Orders"
-                                    />
-                                    <CardContent>
-                                        <Typography variant="h5" component="div">
-                                            No orders yet !
-                                        </Typography>
-                                        <Typography variant="body2" color="text.secondary">
-                                            It looks like you have place any orders yet.
-                                        </Typography>
-                                        <Button variant="outlined" size="small">
-                                            Place an order
-                                        </Button>
-                                    </CardContent>
-                                </Card>
-                            }
+                                    )) : <Card className='' sx={{ maxWidth: 345, textAlign: 'center', padding: 2 }}>
+                                        <CardMedia
+                                            component="img"
+                                            alt="No Orders"
+                                            height="140"
+                                            image="https://cdn.dribbble.com/users/2241516/screenshots/6444657/________.gif" // Replace with your image URL
+                                            title="No Orders"
+                                        />
+                                        <CardContent>
+                                            <Typography variant="h5" component="div">
+                                                No orders yet !
+                                            </Typography>
+                                            <Typography variant="body2" color="text.secondary">
+                                                It looks like you have place any orders yet.
+                                            </Typography>
+                                            <Button variant="outlined" size="small">
+                                                Place an order
+                                            </Button>
+                                        </CardContent>
+                                    </Card>
+                                }
 
-                        </CardContent>
-                    </Card>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+
                 </Grid>
-
-            </Grid>
-        </Box>
+            </Box>
+        </div>
     );
 }
 
@@ -592,7 +636,7 @@ export default function ManageUserPage() {
     return (
         <SnackbarProvider maxSnack={3}
             anchorOrigin={
-                { vertical: 'top', horizontal: 'right' }
+                { vertical: 'bottom', horizontal: 'right' }
             }
         >
             <ManageUser />

@@ -8,6 +8,7 @@ import { Button, IconButton } from "@mui/material";
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import { useCart } from "../../context/ShopContext";
 import Swal from "sweetalert2";
+import './products.css'
 
 const Products = ({ product }) => {
     const { addToCart, cart } = useCart();
@@ -39,7 +40,7 @@ const Products = ({ product }) => {
 
     return (
         <Card isFooterBlurred
-            isPressable className="w-[280px] h-[500px] max-h-[500px] col-span-12 sm:col-span-5">
+            isPressable className="w-[280px] max-h-[500px] col-span-12 sm:col-span-5 ">
             <CardHeader className="absolute z-10 flex-col items-start">
                 {
                     product.productDate < Date.now() - (7 * 86400000) ?
@@ -52,15 +53,17 @@ const Products = ({ product }) => {
                     alt={`${product.productName} Image`}
                     className="object-cover w-full h-full hover:scale-125 transition-transform duration-300 ease-in-out"
                 />
+                <hr />
             </CardBody>
 
-            <CardFooter className="flex  flex-col items-start p-4 space-y-1">
-                <div className=" text-[15px] text-gray-500">{product.category}</div>
+            <CardFooter className="flex  flex-col items-start p-4 ">
+
+                <div className=" text-[13px] text-gray-500">{product.category}</div>
                 <div className=" w-full justify-between flex flex-roe text-black">
-                    <div className="text-[25px]  text-black">
+                    <div className="text-[18px]  text-black">
                         {product.itemCode}
                     </div>
-                    <div className=" text-right text-black">
+                    <div className="text-[15px] text-right text-black">
                         {product.productName}
                     </div>
 
@@ -71,7 +74,7 @@ const Products = ({ product }) => {
                         <span key={index} className="text-[15px] text-yellow-500">★</span>
                     ))}
                 </div>
-                <div className="text-[25px] font-bold text-black">$ {product.price.toFixed(2)} </div>
+                <div className="text-[23px] text-black">$ {product.price.toFixed(2)} </div>
                 <div className="flex justify-end w-full">
                     <Button variant="outlined" size="small" aria-label="add to shopping cart" onClick={handleAddToCart}>
                         {/* <AddShoppingCartIcon fontSize="small" /> */}

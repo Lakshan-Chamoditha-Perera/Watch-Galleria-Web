@@ -32,7 +32,18 @@ export default function OrderAccordian(props) {
           },
         }}
       >
-        <Typography className="pr-4">{element._id}</Typography>
+
+        <div className="gap-3 border w-full  flex flex-row text-black">
+          <div className="text-[18px]  border text-black">
+            Order Id 
+          </div>
+            
+          <div className="text-[10px] border justify-around flex items-center text-black">
+            {
+              element._id
+            }
+          </div>
+        </div>
         <Typography className="pr-4">{new Date(element.createdAt).toDateString()}</Typography>
         <Typography className="pr-4">${Number(element.totalPrice).toFixed(2)}</Typography>
       </AccordionSummary>

@@ -36,7 +36,10 @@ const SignUpPage = () => {
             let username = user.displayName ? user.displayName : user.email;
 
             await axios.post('http://localhost:3000/api/auth/signup', {
-                email: email, password: password, name: username, photoURL: user.photoURL ? user.photoURL : ""
+                email: email, 
+                password: password, 
+                name: username, 
+                photoURL: user.photoURL ? user.photoURL : ""
             }).then((res) => {
                 Swal.fire('Success!', 'Account created successfully!', 'success');
             }).catch((err) => {

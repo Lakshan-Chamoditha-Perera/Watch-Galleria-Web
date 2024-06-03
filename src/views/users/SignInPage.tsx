@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Box, Button, Link, TextField, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, User } from 'firebase/auth';
 import { auth } from '../../config/firebase';
 import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
@@ -22,7 +22,8 @@ const SignInPage = () => {
     const handleSignIn = async () => {
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
+            const user:User = userCredential.user;
+            // @ts-ignore    
             login(user);
 
             await Swal.fire('Welcome ' + user.displayName, 'You have successfully signed in with Google.', 'success');
@@ -55,6 +56,7 @@ const SignInPage = () => {
                     if (res.data.status == 200) {
                         let user = res.data.data.user;
                         Swal.fire('Welcome ' + user.name + ' You have successfully signed in.', 'success');
+                        console.log(user)
                         login(user);
                         updateToken(res.data.data.token);
                         navigate('/home');
@@ -64,7 +66,7 @@ const SignInPage = () => {
                         throw new Error('An error occurred while signing in with Google');
                     }
                 }).catch((err) => {
-                   throw new Error('An error occurred while signing in with Google');
+                    throw new Error('An error occurred while signing in with Google');
                 })
             } else {
                 throw new Error('User not found');
@@ -77,7 +79,7 @@ const SignInPage = () => {
 
     return (<Box display="flex" height="100vh">
         <Box flex={1} display="flex" justifyContent="center" alignItems="center">
-            <Box width="100%" maxWidth={400} p={2}>
+            <Box width="100% border" maxWidth={400} p={2}>
                 <Typography variant="h4" component="h1" gutterBottom>
                     Welcome back.
                 </Typography>

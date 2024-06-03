@@ -7,6 +7,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { SnackbarProvider, useSnackbar } from 'notistack';
 import { WatchDto } from '../../util/dto/watch.dto';
+import './addProductForm.css'
 
 const ManageProductForm = () => {
     const [itemCode, setItemCode] = useState('');
@@ -20,11 +21,8 @@ const ManageProductForm = () => {
     const [gender, setGender] = useState('UNISEX');
     const [images, setImages] = useState<File[]>([]);
     const [itemList, setItemList] = useState<WatchDto[]>([]);
-
     const [disableButton, setDisableButton] = useState(false);
-
     const { enqueueSnackbar } = useSnackbar();
-
 
 
     useEffect(() => {
@@ -32,13 +30,12 @@ const ManageProductForm = () => {
     }, []);
 
 
-
-    const handleFileChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
         if (files && files.length > 0) {
             const fileList = Array.from(files);
-            const updatedImages = images ? [...images] : Array(4).fill(null);
-            updatedImages[index] = fileList[0];
+            const updatedImages = images ? [...images] : Array(1).fill(null);
+            updatedImages[0] = fileList[0];
 
             const reader = new FileReader();
             reader.onload = () => {
@@ -54,7 +51,8 @@ const ManageProductForm = () => {
     }
 
     // SAVE ITEM
-    const saveItem = () => {
+    const saveItem = (e) => {
+        e.preventDefault()
         const formData = new FormData();
         formData.append('itemCode', itemCode);
         formData.append('productName', productName);
@@ -79,7 +77,6 @@ const ManageProductForm = () => {
         };
 
         axios.request(config).then((res) => {
-            console.log(res.data);
 
             enqueueSnackbar('Item added successfully', { variant: 'success' });
             clearAll();
@@ -87,6 +84,8 @@ const ManageProductForm = () => {
             console.log(err);
             enqueueSnackbar(err.response.data.error, { variant: 'error' });
         })
+
+        loadAllItemList();
     }
 
     //DELETE ITEM
@@ -136,6 +135,10 @@ const ManageProductForm = () => {
         });
     }
 
+    //UPDATE ITEM
+    const updateItem = () => {
+
+    }
 
     const handleItemCode = (e) => {
         enqueueSnackbar(e.target.value, { variant: 'info' })
@@ -156,7 +159,6 @@ const ManageProductForm = () => {
         setGender('UNISEX');
         setImages([]);
     }
-
 
     const [selectedItem, setSelectedItem] = useState<WatchDto>();
 
@@ -187,287 +189,297 @@ const ManageProductForm = () => {
         }
     };
 
+    const handleRatingChange = (e) => {
+        const value = e.target.value;
+        if (value === "") {
+            setRating(0);
+        } else {
+            const numberValue = Number.parseInt(value, 10);
+            if (!isNaN(numberValue) && numberValue >= 0 && numberValue <= 5) {
+                setRating(numberValue);
+            }
+        }
+    };
 
-    return (<div className=" bg-[#F8F8F9] px-[13.33vw] flex justify-center">
-        <Box className='p-3 w-full '>
+    return (<div className=" px-[13.33vw] my-10 flex flex-col justify-center min-h-[80vh]">
 
-            <Box className='bg-[#FEFEFF] border rounded p-3'>
-                <Typography className="text-left border border-red-500" variant="h4" component="h1" gutterBottom>
-                    Manage Products
-                    <Typography className="text-left border" variant="subtitle1" gutterBottom>
-                        Add your product for your customers
-                    </Typography>
+        <Box className='rounded p-3 glass-card'>
+            <Typography fontWeight="bold" className="text-left " variant="h3"  >
+                Manage Products
+                <Typography className="text-left" variant="subtitle1" gutterBottom>
+                    Add new products, update or delete existing products
                 </Typography>
-            </Box>
+            </Typography>
+        </Box>
 
-            <Box component="form" className="mt-3 p-3 bg-[#FEFEFF] rounded" noValidate
-                autoComplete="off">
-                <Grid container className='bg-[#FEFEFF] justify-center '>
-                    <Grid className='' item xs={12} md={6}>
-                        <Box className='bg-[#FEFEFF]' mb={4}>
-                            <Box p={2} borderRadius={2} className='border rounded'>
-                                <Typography fontWeight="bold" variant="h6" component="h2" gutterBottom
-                                    className="text-left">
-                                    Basic Information
-                                </Typography>
-                                <Stack spacing={2}>
-                                    <Autocomplete
-                                        freeSolo
-                                        disableClearable
-                                        options={itemList.map((option: WatchDto) => option.itemCode)}
-                                        onChange={handleOptionChange}
-                                        renderInput={(params) => (
-                                            <TextField
-                                                {...params}
-                                                label="Search input"
-                                                onChange={handleItemCode}
-                                                InputProps={{
-                                                    ...params.InputProps,
-                                                    type: 'search',
-                                                }}
-                                            />
-                                        )}
+
+        <Box component="form" className="mt-3  rounded" noValidate autoComplete="off">
+
+            <div className='flex flex-wrap gap-5 justify-between '>
+
+                <Grid xs={12} md={7} className=" h-fit glass-card">
+                    <Box className='bg-[#FEFEFF]' mb={4}>
+                        <Box p={2} borderRadius={2} className='rounded'>
+                            <Typography fontWeight="bold" variant="h5" component="h2" gutterBottom
+                                className="text-left">
+                                Basic Information
+                            </Typography>
+                            <Stack spacing={2}>
+                                <Autocomplete
+                                    freeSolo
+                                    disableClearable
+                                    options={itemList.map((option: WatchDto) => option.itemCode)}
+                                    onChange={handleOptionChange}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Item code"
+                                            onChange={handleItemCode}
+                                            InputProps={{
+                                                ...params.InputProps,
+                                                type: 'search',
+                                            }}
+                                        />
+                                    )}
+                                />
+                            </Stack>
+                            <TextField
+                                size='small'
+                                label="Product Name"
+                                variant="outlined"
+                                fullWidth
+                                margin="normal"
+                                required
+                                value={productName}
+                                onChange={(e) => {
+                                    setProductName(e.target.value)
+                                }}
+                            />
+                            <TextField
+                                size='small'
+                                label="Description"
+                                variant="outlined"
+                                fullWidth
+                                margin="normal"
+                                multiline
+                                rows={4}
+                                required
+                                value={description}
+                                onChange={(e) => {
+                                    setDescription(e.target.value)
+                                }}
+                            />
+                        </Box>
+                    </Box>
+
+
+                    <Box className='bg-[#FEFEFF]  rounded' mb={4}>
+                        <Box p={2} borderRadius={2}>
+                            <Typography fontWeight="bold" variant="h5" component="h2" gutterBottom
+                                className="text-left">
+                                Category
+                            </Typography>
+                            <FormControl variant="outlined" fullWidth margin="normal" required>
+                                <InputLabel>Product Category</InputLabel>
+                                <Select label="Product Category" value={category}
+                                    onChange={(event) => {
+                                        setCategory(event.target.value)
+                                    }}>
+                                    <MenuItem value="LUXURY">LUXURY</MenuItem>
+                                    <MenuItem value="SPORT">SPORT</MenuItem>
+                                    <MenuItem value="CASUAL">CASUAL</MenuItem>
+                                    <MenuItem value="SMART">SMART</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Box>
+                    </Box>
+
+
+                    <Box className='bg-[#FEFEFF]  rounded' mb={4}>
+                        <Box p={2} borderRadius={2}>
+                            <Typography fontWeight="bold" variant="h5" component="h2" gutterBottom
+                                className="text-left">
+                                Price & Quantity
+                            </Typography>
+                            <Grid container spacing={2}>
+                                <Grid item xs={6}>
+                                    <TextField
+
+                                        size='small'
+                                        value={price}
+                                        label="Price"
+                                        fullWidth
+                                        variant="outlined"
+                                        margin="normal"
+                                        type="number"
+                                        required
+
+                                        onChange={(e) => {
+                                            setPrice(e.target.value)
+                                        }}
                                     />
-                                </Stack>
-                                <TextField
-                                    label="Product Name"
-                                    variant="outlined"
-                                    fullWidth
-                                    margin="normal"
-                                    required
-                                    value={productName}
-                                    onChange={(e) => {
-                                        setProductName(e.target.value)
-                                    }}
-                                />
-                                <TextField
-                                    label="Description"
-                                    variant="outlined"
-                                    fullWidth
-                                    margin="normal"
-                                    multiline
-                                    rows={4}
-                                    required
-                                    value={description}
-                                    onChange={(e) => {
-                                        setDescription(e.target.value)
-                                    }}
-                                />
-                            </Box>
-                        </Box>
-
-
-                        <Box className='bg-[#FEFEFF] border rounded' mb={4}>
-                            <Box p={2} borderRadius={2}>
-                                <Typography fontWeight="bold" variant="h6" component="h2" gutterBottom
-                                    className="text-left">
-                                    Category
-                                </Typography>
-                                <FormControl variant="outlined" fullWidth margin="normal" required>
-                                    <InputLabel>Product Category</InputLabel>
-                                    <Select label="Product Category" value={category}
-                                        onChange={(event) => {
-                                            setCategory(event.target.value)
-                                        }}>
-                                        <MenuItem value="LUXURY">LUXURY</MenuItem>
-                                        <MenuItem value="SPORT">SPORT</MenuItem>
-                                        <MenuItem value="CASUAL">CASUAL</MenuItem>
-                                        <MenuItem value="SMART">SMART</MenuItem>
-                                    </Select>
-                                </FormControl>
-                            </Box>
-                        </Box>
-
-
-                        <Box className='bg-[#FEFEFF] border rounded' mb={4}>
-                            <Box p={2} borderRadius={2}>
-                                <Typography fontWeight="bold" variant="h6" component="h2" gutterBottom
-                                    className="text-left">
-                                    Price & Quantity
-                                </Typography>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={6}>
-                                        <TextField
-                                            value={price}
-                                            label="Price"
-                                            fullWidth
-                                            variant="outlined"
-                                            margin="normal"
-                                            type="number"
-                                            required
-
-                                            onChange={(e) => {
-                                                setPrice(e.target.value)
-                                            }}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <TextField
-                                            value={quantity}
-                                            label="Quantity"
-                                            variant="outlined"
-                                            fullWidth
-                                            margin="normal"
-                                            type="number"
-                                            required
-                                            onChange={(e) => {
-                                                setQuantity(Number.parseInt(e.target.value))
-                                            }}
-                                        />
-                                    </Grid>
                                 </Grid>
-                            </Box>
-                        </Box>
-                    </Grid>
+                                <Grid item xs={6}>
+                                    <TextField
 
-                    <Grid className='p-3' item xs={12} md={6}>
-                        <Box mb={4}>
-                            <Box p={2} className='bg-[#FEFEFF] border rounded' borderRadius={2}>
-                                <Typography fontWeight="bold" variant="h6" component="h2"
-                                    gutterBottom
-                                    className="text-left">
-                                    Product Image
-                                </Typography>
-                                <Grid container spacing={2}>
-
-                                    {[...Array(4)].map((_, index) => (
-                                        <Grid item xs={6} sm={3} key={index}>
-                                            <Button
-                                                variant="outlined"
-                                                component="label"
-                                                fullWidth
-                                                sx={{
-                                                    height: '100px',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center'
-                                                }}
-                                            >
-                                                {images && images[index] ? (
-                                                    <img
-                                                        src={URL.createObjectURL(images[index])}
-                                                        style={{ maxHeight: '100%', maxWidth: '100%' }}
-                                                        alt={`Uploaded preview ${index}`}
-                                                    />
-                                                ) : (
-                                                    <AddPhotoAlternateIcon />
-                                                )}
-                                                <input
-
-                                                    type="file"
-                                                    accept="image/*"
-                                                    hidden
-                                                    onChange={(e) => {
-                                                        console.log(index)
-                                                        handleFileChange(index, e)
-                                                    }
-                                                    }
-                                                />
-                                            </Button>
-                                        </Grid>
-                                    ))}
-
+                                        size='small'
+                                        value={quantity}
+                                        label="Quantity"
+                                        variant="outlined"
+                                        fullWidth
+                                        margin="normal"
+                                        type="number"
+                                        required
+                                        onChange={(e) => {
+                                            setQuantity(Number.parseInt(e.target.value))
+                                        }}
+                                    />
                                 </Grid>
-                            </Box>
-                        </Box>
-
-                        {/* Size and Date */}
-                        <Box mb={4}>
-                            <Box p={2} className='bg-[#FEFEFF]  border rounded' borderRadius={2}>
-                                <Typography fontWeight="bold" variant="h6" component="h2"
-                                    gutterBottom
-                                    className="text-left">
-                                    Select Size
-                                </Typography>
-                                <TextField
-                                    value={rating}
-                                    label="Ratings 1-5"
-                                    variant="outlined"
-                                    fullWidth
-                                    margin="normal"
-                                    required
-                                    onChange={(e) => {
-                                        setRating(Number.parseInt(e.target.value))
-                                    }}
-                                />
-                                <TextField
-                                    value={productDate}
-                                    label="Product Date"
-                                    variant="outlined"
-                                    fullWidth
-                                    margin="normal"
-                                    type="date"
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                    required
-                                    onChange={(e) => {
-                                        setProductDate(e.target.value)
-                                    }}
-                                />
-                            </Box>
-                        </Box>
-
-                        {/* Gender */}
-                        <Box mb={4}>
-                            <Box p={2} className='bg-[#FEFEFF]  border rounded' borderRadius={2}>
-                                <Typography fontWeight="bold" variant="h6" className='text-left'
-                                    gutterBottom>
-                                    Gender
-                                </Typography>
-
-                                <FormControl className='border bg-[#FEFEFF]' component="fieldset"
-                                    sx={{ width: '100%' }}>
-                                    <RadioGroup
-
-                                        sx={{ justifyContent: 'space-around', display: 'flex' }}
-                                        className=' border rounded p-2 '
-                                        aria-label="gender"
-                                        name="gender"
-                                        value={gender}
-                                        onChange={handleGenderChange}
-                                        row
-                                    >
-                                        <FormControlLabel value="MALE" control={<Radio />}
-                                            label="Male" />
-                                        <FormControlLabel value="FEMALE" control={<Radio />}
-                                            label="Female" />
-                                        <FormControlLabel value="UNISEX" control={<Radio />}
-                                            label="Unisex" />
-                                    </RadioGroup>
-                                </FormControl>
-                            </Box>
-                        </Box>
-
-                        {/* buttons */}
-                        <Grid container gap={2} className='justify-evenly border rounded p-2'>
-                            <Grid item xs={3}>
-                                <Button disabled={disableButton} variant="contained" color="primary" type="submit" fullWidth
-                                    startIcon={<AddIcon />}
-                                    onClick={saveItem}>
-                                    Add
-                                </Button>
                             </Grid>
-                            <Grid item xs={3}>
-                                <Button disabled={!disableButton} variant="contained" color="secondary" fullWidth
-                                    startIcon={<UpdateIcon />}>
-                                    Update
-                                </Button>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <Button disabled={!disableButton} variant="contained" color="error" fullWidth
-                                    startIcon={<DeleteIcon />}
-                                    onClick={deleteItem}
-                                >
-                                    Delete
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </Grid>
+                        </Box>
+                    </Box>
 
                 </Grid>
-            </Box>
+
+                <Grid xs={12} md={4} lg={1} className="justify-start w-[400px] glass-card">
+
+
+
+                    {/* Size and Date */}
+                    <Box mb={4}>
+                        <Box p={2} className='bg-[#FEFEFF]  rounded' borderRadius={2}>
+                            <Typography fontWeight="bold" variant="h5" component="h2"
+                                gutterBottom
+                                className="text-left">
+                                Rating & Date
+                            </Typography>
+                            <TextField
+                                size='small'
+                                value={rating}
+                                label="Ratings 0-5"
+                                variant="outlined"
+                                fullWidth
+                                margin="normal"
+                                required
+                                type="number"
+                                onChange={handleRatingChange}
+                                inputProps={{ min: 0, max: 5 }}
+                            />
+                            <TextField
+                                size='small'
+                                value={productDate}
+                                label="Product Date"
+                                variant="outlined"
+                                fullWidth
+                                margin="normal"
+                                type="date"
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                required
+                                onChange={(e) => {
+                                    setProductDate(e.target.value)
+                                }}
+                            />
+                        </Box>
+                    </Box>
+
+                    {/* Gender */}
+                    <Box mb={4}>
+                        <Box px={2} className='bg-[#FEFEFF]  rounded' borderRadius={2}>
+                            <Typography fontWeight="bold" variant="h5" className='text-left'
+                                gutterBottom>
+                                Gender
+                            </Typography>
+
+                            <FormControl component="fieldset"
+                                sx={{ width: '100%' }}>
+                                <RadioGroup
+                                    sx={{ justifyContent: 'space-around', display: 'flex' }}
+                                    className='rounded border p-2 '
+                                    aria-label="gender"
+                                    name="gender"
+                                    value={gender}
+                                    onChange={handleGenderChange}
+                                    row
+                                >
+                                    <FormControlLabel value="MALE" control={<Radio />}
+                                        label="Male" />
+                                    <FormControlLabel value="FEMALE" control={<Radio />}
+                                        label="Female" />
+                                    <FormControlLabel value="UNISEX" control={<Radio />}
+                                        label="Unisex" />
+                                </RadioGroup>
+                            </FormControl>
+                        </Box>
+                    </Box>
+
+                </Grid>
+
+                <div className='flex flex-col justify-between glass-card' >
+
+                    <Box p={2} className="bg-[#FEFEFF] max-w-[400px] rounded" borderRadius={2}>
+                        <Typography fontWeight="bold" variant="h5" component="h2" gutterBottom className="text-left">
+                            Product Image
+                        </Typography>
+                        <Grid>
+                            <Button
+                                variant="outlined"
+                                component="label"
+                                fullWidth
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
+                                }}
+                            >
+                                {images && images[0] ? (
+                                    <img
+                                        src={URL.createObjectURL(images[0])}
+                                        style={{ maxHeight: '100%', maxWidth: '100%' }}
+                                        alt={`Uploaded preview ${0}`}
+                                    />
+                                ) : (
+                                    <AddPhotoAlternateIcon />
+                                )}
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    hidden
+                                    onChange={(e) => handleFileChange(e)}
+                                />
+                            </Button>
+                        </Grid>
+                    </Box>
+
+
+                    {/* buttons */}
+                    <div className='justify-end gap-4 flex  rounded p-2'>
+
+                        <Button disabled={disableButton} variant="contained" color="primary" type="submit"
+                            startIcon={<AddIcon />}
+                            onClick={saveItem}>
+                            Add
+                        </Button>
+                        <Button disabled={!disableButton} variant="contained" color="secondary"
+                            startIcon={<UpdateIcon />}
+                            onClick={updateItem}>
+                            Update
+                        </Button>
+                        <Button disabled={!disableButton} variant="contained" color="error"
+                            startIcon={<DeleteIcon />}
+                            onClick={deleteItem}
+                        >
+                            Delete
+                        </Button>
+                    </div>
+
+                </div>
+
+            </div>
+
         </Box>
+
     </div>)
 
 };
