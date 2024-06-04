@@ -7,10 +7,10 @@ import "slick-carousel/slick/slick-theme.css";
 import { Button, IconButton } from "@mui/material";
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import { useCart } from "../../context/ShopContext";
-import Swal from "sweetalert2";
 import './products.css'
+import { enqueueSnackbar, SnackbarProvider } from "notistack";
 
-const Products = ({ product }) => {
+const ProductsView = ({ product }) => {
     const { addToCart, cart } = useCart();
 
     const sliderSettings = {
@@ -24,17 +24,10 @@ const Products = ({ product }) => {
     const handleAddToCart = () => {
         try {
             addToCart({ ...product, addToCartQuantity: 1 });
-            Swal.fire({
-                icon: 'success',
-                title: 'Success',
-                text: 'Item added to cart'
-            });
+            enqueueSnackbar('Item added to cart', { variant: 'success' });
         } catch (e) {
-            Swal.fire({
-                icon: 'info',
-                title: 'Info',
-                text: 'Item already in cart'
-            })
+            enqueueSnackbar('Item Already in Cart', { variant: 'info' });
+
         };
     }
 
@@ -87,4 +80,11 @@ const Products = ({ product }) => {
     );
 };
 
-export default Products;
+
+export default function Products({ product }) {
+    return (
+        <SnackbarProvider maxSnack={3} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+            <ProductsView product={product} />
+        </SnackbarProvider>
+    );
+}

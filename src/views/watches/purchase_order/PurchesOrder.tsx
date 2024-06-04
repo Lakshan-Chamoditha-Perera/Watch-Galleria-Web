@@ -1,14 +1,14 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Add, Delete, FitScreen, NavigateBefore, Remove } from '@mui/icons-material';
 import { Avatar, Box, Button, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, TextField, Card } from '@mui/material';
 import { SnackbarProvider, VariantType, useSnackbar } from 'notistack';
 import axios from 'axios';
-import { useCart } from '../../context/ShopContext';
-import { WatchDto } from '../../util/dto/watch.dto';
+import { useCart } from '../../../context/ShopContext';
+import { WatchDto } from '../../../util/dto/watch.dto';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../../context/AuthContext';
 import './PurchesOrder.css';
-import { image } from '@nextui-org/react';
+import PayButton from '../../../components/buttons/PayButton';
 
 const OrderForm = () => {
     const navigate = useNavigate();
@@ -34,39 +34,6 @@ const OrderForm = () => {
         setCart(cart.filter(item => item.itemCode !== itemCode));
     };
 
-    // place order function
-    const handlePlaceOrder = async () => {
-        let order = {
-            userEmail: user.email,
-            itemList: cart.map(item => {
-                return {
-                    itemCode: item.itemCode,
-                    quantity: item.addToCartQuantity,
-                    price: item.price,
-                    image: item.imageUrlList[0]
-                }
-            }),
-            totalPrice: totalPrice,
-        };
-
-        const config = {
-            method: "post",
-            url: "http://localhost:3000/api/orders",
-            data: order,
-        };
-
-        await axios.request(config).then(response => {
-            console.log(response.data);
-            setCart([]);
-            enqueueSnackbar('Order Placed!', { variant: 'success' });
-        }).catch(error => {
-            console.error(error);
-            enqueueSnackbar(
-                'An error occurred while placing the order!',
-                { variant: 'error' }
-            );
-        });
-    }
 
     const totalItems = cart.reduce((acc, item: WatchDto) => acc + item.addToCartQuantity, 0);
     const totalPrice = cart.reduce((acc, item: WatchDto) => acc + item.price * item.addToCartQuantity, 0);
@@ -81,14 +48,11 @@ const OrderForm = () => {
             <Box className=' rounded  p-3 glass-card'>
                 <Typography fontWeight="bold" className="text-left " variant="h3"  >
                     Purchase Order
-                    <Typography className="text-left" variant="subtitle1" gutterBottom>
-
-                    </Typography>
                 </Typography>
             </Box>
 
             <Box component="form" className="mt-3 rounded" noValidate autoComplete="off">
-            
+
                 <Grid container className='justify-between ' spacing={3} sx={{ minHeight: 'fit' }}>
 
 
@@ -236,7 +200,8 @@ const OrderForm = () => {
 
 
                                 <Grid item xs={12}>
-                                    <Button variant="contained" color="success" fullWidth onClick={handlePlaceOrder}>Place Order</Button>
+                                    {/* <Button variant="contained" color="success" fullWidth onClick={handlePlaceOrder}>Go to checkout</Button> */}
+                                    <PayButton cartItem={cart} />
                                 </Grid>
                                 <Grid item xs={12}>
                                     <Button variant="text" color="primary" fullWidth onClick={(e) => {

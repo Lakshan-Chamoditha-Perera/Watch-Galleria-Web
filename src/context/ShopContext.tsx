@@ -1,4 +1,4 @@
-import React, { useState, createContext, useContext } from "react";
+import React, { useState, useEffect, createContext, useContext, ReactNode } from "react";
 import { WatchDto } from "../util/dto/watch.dto";
 
 interface ShopContextProps {
@@ -10,16 +10,34 @@ interface ShopContextProps {
 
 const ShopContext = createContext<ShopContextProps | undefined>(undefined);
 
-export const ShopProvider = ({ children }) => {
+export const ShopProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [cart, setCart] = useState<WatchDto[]>([]);
     const [total, setTotal] = useState(0);
+
+    useEffect(() => {
+        // Load cart from localStorage when the component mounts
+        const storedCart = localStorage.getItem('cart');
+        if (storedCart) {
+            const parsedCart = JSON.parse(storedCart) as WatchDto[];
+            setCart(parsedCart);
+            const initialTotal = parsedCart.reduce((acc, item) => acc + item.price * item.addToCartQuantity, 0);
+            setTotal(initialTotal);
+        }
+    }, []);
+
+    useEffect(() => {
+        // Update total whenever cart changes
+        const newTotal = cart.reduce((acc, item) => acc + item.price * item.addToCartQuantity, 0);
+        setTotal(newTotal);
+    }, [cart]);
 
     const addToCart = (product: WatchDto) => {
         if (cart.find((item) => item.itemCode === product.itemCode)) {
             throw new Error('Item already in cart');
         }
-        setCart([...cart, product]);
-        setTotal(total + product.price);
+        const newCart = [...cart, product];
+        setCart(newCart);
+        localStorage.setItem('cart', JSON.stringify(newCart));
     };
 
     return (

@@ -42,8 +42,9 @@ import { ClassNames } from "@emotion/react";
 import NewsletterSignup from "../components/newsletter/Newsletter";
 import ContactUs from "./Contact";
 import ImageSlider from "./ImageSlider";
+import { enqueueSnackbar, SnackbarProvider } from "notistack";
 
-const Common = () => {
+const CommonView = () => {
     const [products, setProducts] = useState<WatchDto[]>([]);
     const [originalProducts, setOriginalProducts] = useState<WatchDto[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -65,9 +66,7 @@ const Common = () => {
             setOriginalProducts(productList);
         }).catch((err) => {
             console.log(err);
-            Swal.fire({
-                icon: 'error', title: 'Oops...', text: err.response.data.error
-            });
+            enqueueSnackbar('Failed to load products.', { variant: 'error' });
         });
     };
 
@@ -162,7 +161,7 @@ const Common = () => {
 
             <Grid className="mt-[50px] flex flex-wrap gap-10 items-center justify-around">
                 {currentProducts.length > 0 && currentProducts.map((product, index) => (
-                    <Products product={product} />
+                    <Products key={index} product={product} />
                 ))}
             </Grid>
 
@@ -179,4 +178,10 @@ const Common = () => {
     </div>);
 };
 
-export default Common;
+export default function Common() {
+    return (
+        <SnackbarProvider maxSnack={3} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+            <CommonView />
+        </SnackbarProvider>
+    );
+}

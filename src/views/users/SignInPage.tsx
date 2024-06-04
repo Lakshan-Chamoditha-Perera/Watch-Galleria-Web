@@ -25,9 +25,8 @@ const SignInPage = () => {
             const user: User = userCredential.user;
             // @ts-ignore    
             login(user);
-
             await Swal.fire('Welcome ' + user.displayName, 'You have successfully signed in with Google.', 'success');
-            navigate('/home');
+            navigate('/');
         } catch (error) {
             await Swal.fire('Error!', 'An error occurred while signing in with Google', 'error')
 
@@ -59,7 +58,7 @@ const SignInPage = () => {
                         console.log(user)
                         login(user);
                         updateToken(res.data.data.token);
-                        navigate('/home');
+                        navigate('/');
                     } else if (res.data.status == 404) {
                         Swal.fire('Error!', 'User not found', 'error');
                     } else {

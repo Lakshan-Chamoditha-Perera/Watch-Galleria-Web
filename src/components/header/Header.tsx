@@ -13,6 +13,10 @@ const Header: React.FC = () => {
     const { user, isLogged, logout } = useAuth();
     const navigate = useNavigate();
 
+    
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
+
     const handleLogout = (e: React.MouseEvent) => {
         e.preventDefault();
         Swal.fire({
@@ -28,8 +32,6 @@ const Header: React.FC = () => {
         });
     };
 
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
@@ -51,7 +53,7 @@ const Header: React.FC = () => {
                 {isLogged && (
                     <ul>
                         <ScrollLink to="watches" smooth={true} duration={500}>
-                            <li className="navlist_item" onClick={() => navigate('/home')}>Watches</li>
+                            <li className="navlist_item" onClick={() => navigate('/')}>Watches</li>
                         </ScrollLink>
                         <ScrollLink to="instruments" smooth={true} duration={500}>
                             <li className="navlist_item">Brands</li>

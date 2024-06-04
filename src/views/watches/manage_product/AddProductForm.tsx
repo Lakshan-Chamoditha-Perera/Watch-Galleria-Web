@@ -6,7 +6,7 @@ import UpdateIcon from '@mui/icons-material/Update';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { SnackbarProvider, useSnackbar } from 'notistack';
-import { WatchDto } from '../../util/dto/watch.dto';
+import { WatchDto } from '../../../util/dto/watch.dto';
 import './addProductForm.css'
 
 const ManageProductForm = () => {
