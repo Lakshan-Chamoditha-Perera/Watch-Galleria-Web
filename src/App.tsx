@@ -8,7 +8,7 @@ import PurchaseOrders from "./views/watches/purchase_order/PurchesOrder";
 import ManageProducts from "./views/watches/manage_product/AddProductForm";
 import SignInPage from "./views/users/SignInPage";
 import SignupPage from "./views/users/SignupPage";
-import Common from "./views/Common";
+import Common from "./views/util/Common";
 import { AuthProvider } from "./context/AuthContext";
 import { ShopProvider } from "./context/ShopContext";
 import { ManageAccounts } from '@mui/icons-material';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { TextField, Button } from '@mui/material';
 import 'tailwindcss/tailwind.css';
-import ContactUs from '../../views/Contact';
+import ContactUs from '../../views/util/Contact';
 
 const NewsletterSignup: React.FC = () => {
     return (

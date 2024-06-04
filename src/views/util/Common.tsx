@@ -17,31 +17,12 @@ import {
     Typography
 } from "@mui/material";
 import axios from "axios";
-import Swal from "sweetalert2";
-//@ts-ignore
-import landingImg from "../assets/landing_logo.png";
-//@ts-ignore
-import landingImg1 from "../assets/landing_logo1.png";
-//@ts-ignore
-import landingImg2 from "../assets/landing_logo2.png";
-//@ts-ignore
-import landingImg3 from "../assets/landing_logo3.png";
-//@ts-ignore
-import landingImg4 from "../assets/landing_logo4.png";
-//@ts-ignore
-import landingImg5 from "../assets/landing_logo5.jpg";
-//@ts-ignore
-import landingImg6 from "../assets/landing_logo6.png";
-//@ts-ignore
-import landingImg7 from "../assets/landing_logo7.png";
+// @ts-ignore
+import landingImg7 from "../../assets/landing_logo7.png";
 
-import Products from "../components/cards/Products";
-import { WatchDto } from "../util/dto/watch.dto";
-import { MenuProps } from "@nextui-org/react";
-import { ClassNames } from "@emotion/react";
-import NewsletterSignup from "../components/newsletter/Newsletter";
-import ContactUs from "./Contact";
-import ImageSlider from "./ImageSlider";
+import Products from "../../components/cards/Products";
+import { WatchDto } from "../../util/dto/watch.dto";
+import NewsletterSignup from "../../components/newsletter/Newsletter";
 import { enqueueSnackbar, SnackbarProvider } from "notistack";
 
 const CommonView = () => {
@@ -180,7 +161,7 @@ const CommonView = () => {
 
 export default function Common() {
     return (
-        <SnackbarProvider maxSnack={3} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+        <SnackbarProvider maxSnack={3} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
             <CommonView />
         </SnackbarProvider>
     );

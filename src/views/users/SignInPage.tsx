@@ -80,13 +80,16 @@ const SignInPage = () => {
         <div className='px-[13.33vw] flex h-100vh  lg:p-0'>
             <Box flex={1} display="flex" justifyContent="center" alignItems="center">
                 <div className='w-full border h-[100vh] flex flex-col lg:justify-center  lg:h-fit lg:py-12 lg:max-w-[400px] lg:p-2' >
-                    <Typography fontWeight="bold" className="h-[15%] border py-5 text-left " variant="h3"  >
-                        Sign in to TIMELY
-                        <Typography className="text-left" variant="subtitle1" gutterBottom>
+                    <div className='border flex flex-col' >
+                        <div className="text-[38px] font-bold  border text-left "   >
+                            Sign in to TIMELY
+
+                        </div>
+                        <div className="text-left" >
                             New to our platform?{' '}
                             <Link onClick={() => navigate('/signup')} style={{ cursor: 'pointer' }}> Register </Link>
-                        </Typography>
-                    </Typography>
+                        </div>
+                    </div>
 
                     <Box className='my-20 lg:my-0 ' component="form" noValidate>
                         <TextField
