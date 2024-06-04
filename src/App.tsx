@@ -14,6 +14,7 @@ import { ShopProvider } from "./context/ShopContext";
 import { ManageAccounts } from '@mui/icons-material';
 import ManageUserPage from './views/users/ManageUserPage';
 import PurchaseSuccess from './views/watches/purchase_order/PurchaseSuccess';
+import NotFoundPage from './views/util/NotFoundPage';
 
 export const Context = createContext(null);
 
@@ -31,7 +32,8 @@ function App() {
                         <Route path="/add-product" element={<ManageProducts />} />
                         <Route path="/purchases" element={<PurchaseOrders />} />
                         <Route path="/profile" element={<ManageUserPage />} />
-                        <Route path="/purchases/success" element={<PurchaseSuccess />} /> {/* Added success route */}
+                        <Route path="/purchases/success" element={<PurchaseSuccess />} />
+                        <Route path="*" element={<NotFoundPage />} />
                     </Routes>
                     <Footer />
                 </Router>
