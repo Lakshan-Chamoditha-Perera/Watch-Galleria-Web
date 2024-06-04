@@ -12,6 +12,11 @@ import { enqueueSnackbar, SnackbarProvider } from "notistack";
 
 const ProductsView = ({ product }) => {
     const { addToCart, cart } = useCart();
+    const [isOutOfStock, setIsOutOfStock] = React.useState(false);
+
+    useEffect(() => {
+        setIsOutOfStock(product.quantity === 0);
+    }, [product]);
 
     const sliderSettings = {
         dots: true,
@@ -32,12 +37,16 @@ const ProductsView = ({ product }) => {
     }
 
     return (
-        <Card isFooterBlurred
+        <Card isFooterBlurred isDisabled={isOutOfStock}
             isPressable className="w-[280px] max-h-[500px] col-span-12 sm:col-span-5 ">
+
             <CardHeader className="absolute z-10 flex-col items-start">
                 {
-                    product.productDate < Date.now() - (7 * 86400000) ?
-                        <p className="text-tiny w-[40px] border-1 border-red-200 rounded text-red-500 uppercase font-bold">NEW</p> : ''
+                    !isOutOfStock ? product.productDate < Date.now() - (7 * 86400000) ?
+                        <p className="text-tiny w-[40px] border-1 border-red-200 rounded text-red-500 uppercase font-bold">NEW</p> :
+                        <p className="text-tiny w-[60px]  border-green-200 rounded text-green-500 uppercase font-bold">IN STOCK</p>
+                        : ""
+
                 }
             </CardHeader>
             <CardBody className="p-0 h-[300px]">
@@ -69,10 +78,15 @@ const ProductsView = ({ product }) => {
                 </div>
                 <div className="text-[23px] text-black">$ {product.price.toFixed(2)} </div>
                 <div className="flex justify-end w-full">
-                    <Button variant="outlined" size="small" aria-label="add to shopping cart" onClick={handleAddToCart}>
-                        {/* <AddShoppingCartIcon fontSize="small" /> */}
-                        add to cart
-                    </Button>
+                    {
+                        isOutOfStock ? <div className='border text-small rounded border-red-400 text-red-500  uppercase px-2 py-1 '>
+                            sold out
+                        </div> :
+                            <Button disabled={isOutOfStock} variant="outlined" size="small" aria-label="add to shopping cart" onClick={handleAddToCart}>
+                                add to cart
+                            </Button>
+                    }
+
                 </div>
             </CardFooter>
         </Card>

@@ -66,6 +66,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setIsLogged(false);
         setToken('');
         sessionStorage.clear();
+        localStorage.clear();
     };
 
     // Update token function
