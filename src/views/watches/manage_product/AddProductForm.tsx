@@ -24,15 +24,70 @@ const ManageProductForm = () => {
     const [disableButton, setDisableButton] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
 
+    const [watchImgURL, setWatchImgURL] = useState(undefined);
 
     useEffect(() => {
         loadAllItemList();
     }, []);
 
 
+
+    const validateForm = () => {
+        const itemCodeRegex = /^[a-zA-Z0-9_-\s]+$/;
+        const productNameRegex = /^[a-zA-Z0-9\s]+$/;
+        const descriptionRegex = /^.{1,500}$/;
+        const priceRegex = /^\d+(\.\d{1,2})?$/;
+        const productDateRegex = /^\d{4}-\d{2}-\d{2}$/;
+        const quantityRegex = /^\d+$/;
+        const validCategories = ["LUXURY", "SPORT", "CASUAL", "SMART"];
+        const validGenders = ["MALE", "FEMALE", "UNISEX"];
+        try {
+
+            if (!itemCodeRegex.test(itemCode)) {
+                throw new Error('Please enter a valid item code');
+            }
+            if (!productNameRegex.test(productName)) {
+                throw new Error('Please enter a valid product name');
+            }
+            if (!descriptionRegex.test(description)) {
+                throw new Error('Please enter a valid description (1 to 500 characters)');
+            }
+            if (!priceRegex.test(price) || Number(price) <= 0) {
+                throw new Error('Please enter a valid price');
+            }
+            if (!productDateRegex.test(productDate)) {
+                throw new Error('Please enter a valid product date');
+            }
+            if (!quantityRegex.test(String(quantity)) || Number(quantity) <= 0) {
+                throw new Error('Please enter a valid quantity');
+            }
+            if (!validCategories.includes(category)) {
+                throw new Error('Please select a valid category');
+            }
+            if (rating < 0 || rating > 5) {
+                throw new Error('Please enter a valid rating (0-5)');
+            }
+            if (!images || images.length == 0 || images[0].type.includes('image') == false) {
+                throw new Error('Please select an valid image');
+            }
+            if (!validGenders.includes(gender)) {
+                throw new Error('Please select a valid category');
+            }
+            return true;
+        } catch (err) {
+            enqueueSnackbar(err.message, { variant: 'error' });
+            return false;
+        }
+
+    };
+
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setWatchImgURL(undefined);
+
         const files = e.target.files;
-        if (files && files.length > 0) {
+        // check file is jpg or png avif , jpeg 
+
+        if (files && files.length > 0 && files[0].type.includes('image')) {
             const fileList = Array.from(files);
             const updatedImages = images ? [...images] : Array(1).fill(null);
             updatedImages[0] = fileList[0];
@@ -43,8 +98,12 @@ const ManageProductForm = () => {
             };
             reader.readAsDataURL(fileList[0]);
             setImages(updatedImages);
+        } else {
+            setImages([]);
+            enqueueSnackbar('Please select an image', { variant: 'error' });
         }
     };
+
 
     const handleGenderChange = (event) => {
         setGender(event.target.value);
@@ -52,40 +111,39 @@ const ManageProductForm = () => {
 
     // SAVE ITEM
     const saveItem = (e) => {
-        e.preventDefault()
-        const formData = new FormData();
-        formData.append('itemCode', itemCode);
-        formData.append('productName', productName);
-        formData.append('description', description);
-        formData.append('category', category);
-        formData.append('price', price);
-        formData.append('quantity', quantity + '');
-        formData.append('rating', rating + '');
-        formData.append('productDate', productDate);
-        formData.append('gender', gender);
+        e.preventDefault();
+        if (validateForm()) {
+            const formData = new FormData();
+            formData.append('itemCode', itemCode);
+            formData.append('productName', productName);
+            formData.append('description', description);
+            formData.append('category', category);
+            formData.append('price', price);
+            formData.append('quantity', quantity + '');
+            formData.append('rating', rating + '');
+            formData.append('productDate', productDate);
+            formData.append('gender', gender);
 
-        images.map((image, index) => {
-            if (image) {
-                formData.append(`image${index + 1}`, image);
-            }
-        });
+            images.map((image, index) => {
+                if (image) {
+                    formData.append(`image${index + 1}`, image);
+                }
+            });
 
-        const config = {
-            method: "post",
-            url: "http://localhost:3000/api/watch",
-            data: formData,
-        };
+            const config = {
+                method: "post",
+                url: "http://localhost:3000/api/watch",
+                data: formData,
+            };
 
-        axios.request(config).then((res) => {
-
-            enqueueSnackbar('Item added successfully', { variant: 'success' });
-            clearAll();
-        }).catch((err) => {
-            console.log(err);
-            enqueueSnackbar(err.response.data.error, { variant: 'error' });
-        })
-
-        loadAllItemList();
+            axios.request(config).then((res) => {
+                enqueueSnackbar('Item added successfully', { variant: 'success' });
+                clearAll();
+            }).catch((err) => {
+                console.log(err);
+                enqueueSnackbar(err.message, { variant: 'error' });
+            })
+        } loadAllItemList();
     }
 
     //DELETE ITEM
@@ -137,14 +195,24 @@ const ManageProductForm = () => {
 
     //UPDATE ITEM
     const updateItem = () => {
-
+        if (selectedItem) {
+            if (validateForm()) {
+                enqueueSnackbar('Item details validated successfully', { variant: 'success' });
+            }
+        } else {
+            enqueueSnackbar('Please select an item to update', { variant: 'info' });
+        }
     }
 
+
+
     const handleItemCode = (e) => {
-        enqueueSnackbar(e.target.value, { variant: 'info' })
-        setSelectedItem(undefined);
-        setItemCode(e.target.value)
-        setDisableButton(false);
+        if (e.target.value != '') {
+            enqueueSnackbar(e.target.value, { variant: 'info' })
+            setSelectedItem(undefined);
+            setItemCode(e.target.value)
+            setDisableButton(false);
+        }
     }
 
     function clearAll() {
@@ -168,13 +236,11 @@ const ManageProductForm = () => {
         itemList.map((element) => {
             if (element.itemCode === newValue) {
                 selectedItem = element
-                enqueueSnackbar(selectedItem.itemCode + '', { variant: 'info' });
+                enqueueSnackbar(selectedItem.itemCode + ' is selected. ', { variant: 'info' });
             }
         });
 
         setSelectedItem(selectedItem);
-
-
         if (selectedItem) {
             setItemCode(selectedItem.itemCode);
             setProductName(selectedItem.productName);
@@ -185,6 +251,8 @@ const ManageProductForm = () => {
             setRating(selectedItem.rating);
             setProductDate(selectedItem.productDate.toISOString().split('T')[0]);
             setGender(selectedItem.gender);
+            setImages([]);
+            setWatchImgURL(selectedItem.imageUrlList[0]);
             setDisableButton(true);
         }
     };
@@ -312,7 +380,7 @@ const ManageProductForm = () => {
                                         variant="outlined"
                                         margin="normal"
                                         type="number"
-                                        required
+                                        required={true}
 
                                         onChange={(e) => {
                                             setPrice(e.target.value)
@@ -418,38 +486,38 @@ const ManageProductForm = () => {
 
                 <div className='flex flex-col justify-between glass-card' >
 
-                    <Box p={2} className="bg-[#FEFEFF] max-w-[400px] rounded" borderRadius={2}>
+                    <Box p={2} className="bg-[#FEFEFF] h-[650px] w-[400px] max-w-[400px] rounded" borderRadius={2}>
                         <Typography fontWeight="bold" variant="h5" component="h2" gutterBottom className="text-left">
                             Product Image
                         </Typography>
-                        <Grid>
-                            <Button
-                                variant="outlined"
-                                component="label"
-                                fullWidth
-                                sx={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center'
-                                }}
-                            >
-                                {images && images[0] ? (
-                                    <img
-                                        src={URL.createObjectURL(images[0])}
-                                        style={{ maxHeight: '100%', maxWidth: '100%' }}
-                                        alt={`Uploaded preview ${0}`}
-                                    />
-                                ) : (
-                                    <AddPhotoAlternateIcon />
-                                )}
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    hidden
-                                    onChange={(e) => handleFileChange(e)}
+                        <Button
+                            variant="outlined"
+                            component="label"
+                            fullWidth
+                            className='h-[70%]'
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+
+                            }}
+                        >
+                            {images ? (
+                                <img
+                                    src={watchImgURL ? watchImgURL : images[0] ? URL.createObjectURL(images[0]) : ""}
+                                    style={{ maxHeight: '100%', maxWidth: '100%' }}
                                 />
-                            </Button>
-                        </Grid>
+                            ) : (
+                                <AddPhotoAlternateIcon />
+                            )}
+                            <input
+                                type="file"
+                                accept="image/*"
+                                hidden
+                                onChange={(e) => handleFileChange(e)}
+                            />
+                        </Button>
+
                     </Box>
 
 
@@ -459,9 +527,9 @@ const ManageProductForm = () => {
                         <Button disabled={disableButton} variant="contained" color="primary" type="submit"
                             startIcon={<AddIcon />}
                             onClick={saveItem}>
-                            Add
+                            &nbsp;&nbsp;  Add  &nbsp;&nbsp;
                         </Button>
-                        <Button disabled={!disableButton} variant="contained" color="secondary"
+                        <Button disabled={!disableButton} variant="contained" color="success"
                             startIcon={<UpdateIcon />}
                             onClick={updateItem}>
                             Update
