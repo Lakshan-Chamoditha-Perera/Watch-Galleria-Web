@@ -35,7 +35,7 @@ const SignUpPage = () => {
             console.log("----------------------------------------------------------------------------------------------")
             let username = user.displayName ? user.displayName : user.email;
 
-            await axios.post('http://localhost:3000/api/auth/signup', {
+            await axios.post( process.env.VITE_SERVER_URL+'/api/auth/signup', {
                 email: email, 
                 password: password, 
                 name: username, 

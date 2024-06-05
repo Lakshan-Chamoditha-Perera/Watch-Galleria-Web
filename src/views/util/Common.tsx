@@ -38,7 +38,7 @@ const CommonView = () => {
 
     const loadAllProducts = () => {
         const config = {
-            method: "get", url: "http://localhost:3000/api/watch",
+            method: "get", url:  process.env.VITE_SERVER_URL+"/api/watch",
         };
 
         axios.request(config).then((res) => {

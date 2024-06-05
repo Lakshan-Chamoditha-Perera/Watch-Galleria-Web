@@ -30,7 +30,7 @@ const PurchaseSuccessView = () => {
 
             const config = {
                 method: 'post',
-                url: 'http://localhost:3000/api/orders',
+                url: `${process.env.VITE_SERVER_URL}/api/orders`,
                 data: order,
                 headers: {
                     'Content-Type': 'application/json'

@@ -17,7 +17,7 @@ const PayButton = ({ cartItem }) => {
         console.log('PayButton {} handleCheckout order', order)
         const config = {
             method: 'post',
-            url: 'http://localhost:3000/api/checkouts',
+            url: `${process.env.VITE_SERVER_URL}/api/checkouts`,
             data: order,
             headers: {
                 'Content-Type': 'application/json'

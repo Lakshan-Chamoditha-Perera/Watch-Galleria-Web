@@ -132,7 +132,7 @@ const ManageProductForm = () => {
 
             const config = {
                 method: "post",
-                url: "http://localhost:3000/api/watch",
+                url: `${process.env.VITE_SERVER_URL}/api/watch`,
                 data: formData,
             };
 
@@ -149,7 +149,7 @@ const ManageProductForm = () => {
     //DELETE ITEM
     const deleteItem = () => {
         if (selectedItem) {
-            axios.delete(`http://localhost:3000/api/watch/${itemCode}`).then((res) => {
+            axios.delete( `${process.env.VITE_SERVER_URL}/api/watch/${itemCode}`).then((res) => {
                 if (res.status === 200) {
                     enqueueSnackbar('Item deleted successfully', { variant: 'success' });
                     clearAll();
@@ -168,7 +168,7 @@ const ManageProductForm = () => {
 
     // GET ALL ITEMS
     const loadAllItemList = async () => {
-        await axios.get('http://localhost:3000/api/watch').then((res) => {
+        await axios.get(`${process.env.VITE_SERVER_URL}/api/watch`).then((res) => {
             if (res.data.data) {
                 console.log(res.data.data);
                 const watchList = res.data.data.map((item) =>

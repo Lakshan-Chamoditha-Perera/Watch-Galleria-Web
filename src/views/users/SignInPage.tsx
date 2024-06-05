@@ -43,9 +43,13 @@ const SignInPage = () => {
             if (result.user) {
                 // @ts-ignore
                 let accessToken = result.user.accessToken;
+                let url = process.env.VITE_SERVER_URL + '/api/auth/login'
+                console.log("-------------------------------------------")
+                console.log(url)
+                console.log("-------------------------------------------")
                 const config = {
                     method: "post",
-                    url: 'http://localhost:3000/api/auth/login',
+                    url,
                     //@ts-ignore
                     data: {
                         "accessToken": accessToken
@@ -68,9 +72,11 @@ const SignInPage = () => {
                     throw new Error('An error occurred while signing in with Google');
                 })
             } else {
+
                 throw new Error('User not found');
             }
         } catch (error) {
+            console.log(error)
             await Swal.fire('Error!', error.message, 'error')
         }
     };

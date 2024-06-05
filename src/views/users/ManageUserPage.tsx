@@ -312,7 +312,7 @@ const ManageUser = () => {
             }
         };
 
-        axios.put(`http://localhost:3000/api/users/${user?.email}`, updatedUser).then(response => {
+        axios.put(`${process.env.VITE_SERVER_URL}/api/users/${user?.email}`, updatedUser).then(response => {
             console.log(response.data.data)
             updateUser(response.data.data);
             setUserDetails();
@@ -331,7 +331,7 @@ const ManageUser = () => {
             const config = {
                 method: "get",
                 // ${user.email}
-                url: `http://localhost:3000/api/orders/${user.email}`
+                url: `${process.env.VITE_SERVER_URL}/api/orders/${user.email}`
             };
 
             await axios.request(config).then(response => {
@@ -374,7 +374,7 @@ const ManageUser = () => {
             formData.append('profileImage', file);
 
             try {
-                const response = await axios.post(`http://localhost:3000/api/users/profile_image/${user.email}`, formData);
+                const response = await axios.post(`${process.env.VITE_SERVER_URL}/api/users/profile_image/${user.email}`, formData);
                 setUserProfile(response.data.profileUrl);
                 console.log(response.data);
                 if (response.status == 200) {
@@ -434,6 +434,7 @@ const ManageUser = () => {
                                 style={{ display: 'none' }}
                                 id="profile-image-upload"
                             />
+                           
                             <Button onClick={handleFileInputClick}>
                                 Upload Profile Image
                             </Button>
