@@ -26,5 +26,3 @@ dist-ssr
 node_modules/*
 .env
 .idea
-.firebaserc
-.github
