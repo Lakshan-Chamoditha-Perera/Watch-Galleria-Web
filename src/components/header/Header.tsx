@@ -10,7 +10,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
 import { useAuth } from '../../context/AuthContext';
 import Swal from 'sweetalert2';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/ShopContext';
 import { Home } from '@mui/icons-material';
 
@@ -53,9 +53,12 @@ const Header: React.FC = () => {
 
     return (
         <nav className="header-container">
-            <div className="logo">
+            <Link className="logo" 
+                to="/" 
+                onClick={() => navigate('/')}
+            >
                 <span>TIMELY</span>
-            </div>
+            </Link>
             <div className="nav-links">
                 {isLogged && (
                     <ul>
@@ -123,7 +126,7 @@ const Header: React.FC = () => {
                             </Menu>
                         </>
                     ) : (
-                        <Button variant='outlined' color="inherit" href="/signin">Login</Button>
+                        <Button variant='outlined' color="inherit" href="/signin">Signin</Button>
                     )}
                 </Stack>
             </div>

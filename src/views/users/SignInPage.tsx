@@ -133,7 +133,7 @@ const SignInPage = () => {
                             sx={{ mt: 2 }}
                             onClick={handleSignIn}
                         >
-                            Login
+                            Sign In
                         </Button>
                         <Link href="#" variant="body2" className="block pt-3 text-right mt-2">
                             Forgot password?
