@@ -8,7 +8,7 @@ import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { access } from 'fs';
-import {BACKEND_SERVER_URL} from "../../config/env";
+import { BACKEND_SERVER_URL } from "../../config/env";
 
 const SignInPage = () => {
     const [email, setEmail] = useState('');
@@ -84,18 +84,20 @@ const SignInPage = () => {
 
 
     return (
-        <div className='px-[13.33vw] flex h-100vh  lg:p-0'>
+        <div className='px-[13.33vw] pt-10 flex  lg:p-0'>
             <Box flex={1} display="flex" justifyContent="center" alignItems="center">
-                <div className='w-full border h-[100vh] flex flex-col lg:justify-center  lg:h-fit lg:py-12 lg:max-w-[400px] lg:p-2' >
-                    <div className='border flex flex-col' >
-                        <div className="text-[38px] font-bold  border text-left "   >
-                            Sign in to TIMELY
+                <div className='w-full flex flex-col lg:justify-center  lg:h-fit lg:py-12 lg:max-w-[400px] lg:p-2' >
+                    <div className='flex  flex-col' >
+                        <div className="text-[40px] font-bold text-left "   >
+                            Let's Sign you in to TIMELY
+                            <div className="text-[20px] text-gray-500" >
+                                Welcome back,
+                            </div>
+                            <div className="text-[20px] text-gray-500" >
+                                You have been missed!
+                            </div>
+                        </div>
 
-                        </div>
-                        <div className="text-left" >
-                            New to our platform?{' '}
-                            <Link onClick={() => navigate('/signup')} style={{ cursor: 'pointer' }}> Register </Link>
-                        </div>
                     </div>
 
                     <Box className='my-20 lg:my-0 ' component="form" noValidate>
@@ -152,6 +154,13 @@ const SignInPage = () => {
                             Sign In with Google
                         </Button>
                     </Box>
+
+                    <Typography variant="body2" className="text-center ">
+                        Don't have an account?{' '}
+                        <Link href="/signup" className="text-blue-500">
+                            Sign Up
+                        </Link>
+                    </Typography>
 
                     <Typography variant="body2" className="text-center ">
                         By continuing, you agree to our{' '}
