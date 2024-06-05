@@ -1,19 +1,26 @@
 import React from 'react';
 import { Link as ScrollLink } from 'react-scroll';
 import './Header.css';
-import { Button, IconButton, Menu, MenuItem, Stack } from '@mui/material';
+import { Badge, Button, IconButton, Menu, MenuItem, Stack } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
+import CategoryRoundedIcon from '@mui/icons-material/CategoryRounded';
+import ConnectWithoutContactRoundedIcon from '@mui/icons-material/ConnectWithoutContactRounded';
 import AccountCircle from '@mui/icons-material/AccountCircle';
+import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
 import { useAuth } from '../../context/AuthContext';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
+import { useCart } from '../../context/ShopContext';
+import { Home } from '@mui/icons-material';
 
 const Header: React.FC = () => {
     // @ts-ignore
     const { user, isLogged, logout } = useAuth();
     const navigate = useNavigate();
+    const { cart } = useCart();
 
-    
+
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
 
@@ -53,17 +60,31 @@ const Header: React.FC = () => {
                 {isLogged && (
                     <ul>
                         <ScrollLink to="watches" smooth={true} duration={500}>
-                            <li className="navlist_item" onClick={() => navigate('/')}>Watches</li>
+                            <li className="navlist_item flex flex-col items-center" onClick={() => navigate('/')}>
+
+                                <HomeRoundedIcon   fontSize="large"/>
+                                {/* Home */}
+                            </li>
                         </ScrollLink>
                         <ScrollLink to="instruments" smooth={true} duration={500}>
-                            <li className="navlist_item">Brands</li>
+                            <li className="navlist_item flex flex-col items-center" onClick={() => navigate('/')}>
+
+                                <CategoryRoundedIcon  fontSize="large" />
+                                {/* Items */}
+                            </li>
+
                         </ScrollLink>
                         <ScrollLink to="news" smooth={true} duration={500}>
-                            <li className="navlist_item">Contact</li>
+                            <li className="navlist_item flex flex-col items-center" onClick={() => navigate('/')}>
+                                <ConnectWithoutContactRoundedIcon fontSize="large"  />
+                                {/* Contact */}
+                                </li>
                         </ScrollLink>
                         {user?.role === 'ADMIN' && (
                             <ScrollLink to="items" smooth={true} duration={500}>
-                                <li className="navlist_item" onClick={() => navigate('/add-product')}>Items</li>
+                                <li className="navlist_item flex flex-col items-center" onClick={() => navigate('/add-product')}>
+                                <TuneRoundedIcon  fontSize="large"/>
+                                </li>
                             </ScrollLink>
                         )}
                     </ul>
@@ -74,13 +95,18 @@ const Header: React.FC = () => {
                     {isLogged ? (
                         <>
                             <IconButton color="primary" aria-label="add to shopping cart" onClick={() => navigate('/purchases')}>
-                                <ShoppingCartIcon />
+                                <IconButton aria-label="cart">
+                                    <Badge badgeContent={cart.length} color="primary">
+                                        <ShoppingCartIcon  fontSize="large" color="inherit" />
+                                    </Badge>
+                                </IconButton>
+
                             </IconButton>
                             <IconButton onClick={handleClick} color="inherit" aria-label="user account">
                                 {user?.photoURL ? (
                                     <img src={user.photoURL} alt="User Avatar" className="user-avatar" />
                                 ) : (
-                                    <AccountCircle />
+                                    <AccountCircle  fontSize="large"/>
                                 )}
                             </IconButton>
                             <Menu

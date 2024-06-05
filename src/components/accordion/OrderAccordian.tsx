@@ -35,9 +35,9 @@ export default function OrderAccordian(props) {
 
         <div className="gap-3 border w-full  flex flex-row text-black">
           <div className="text-[18px]  border text-black">
-            Order Id 
+            Order Id
           </div>
-            
+
           <div className="text-[10px] border justify-around flex items-center text-black">
             {
               element._id

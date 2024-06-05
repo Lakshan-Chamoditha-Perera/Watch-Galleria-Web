@@ -378,9 +378,9 @@ const ManageUser = () => {
                 setUserProfile(response.data.profileUrl);
                 console.log(response.data);
                 if (response.status == 200) {
-                    console.log(response.data.data.photoURL);
-                    setUserProfile(response.data.data.photoURL);
-                    updateUser(response.data.data);
+                    console.log(response.data);
+                    setUserProfile(response.data.profileUrl);
+                    updateUser(response.data);
                 }
                 enqueueSnackbar('Profile image updated successfully', { variant: 'success' });
             } catch (error) {
