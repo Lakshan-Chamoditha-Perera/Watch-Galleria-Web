@@ -8,6 +8,7 @@ import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { access } from 'fs';
+import {BACKEND_SERVER_URL} from "../../config/env";
 
 const SignInPage = () => {
     const [email, setEmail] = useState('');
@@ -43,7 +44,7 @@ const SignInPage = () => {
             if (result.user) {
                 // @ts-ignore
                 let accessToken = result.user.accessToken;
-                let url = process.env.VITE_SERVER_URL + '/api/auth/login'
+                let url = BACKEND_SERVER_URL + '/api/auth/login'
                 console.log("-------------------------------------------")
                 console.log(url)
                 console.log("-------------------------------------------")

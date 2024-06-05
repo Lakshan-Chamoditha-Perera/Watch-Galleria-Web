@@ -7,6 +7,7 @@ import axios from 'axios';
 import payment_success from "../../../assets/payment-success.png";
 import { Button } from '@mui/material';
 import { useCart } from '../../../context/ShopContext';
+import {BACKEND_SERVER_URL} from "../../../config/env";
 
 const PurchaseSuccessView = () => {
     const { enqueueSnackbar } = useSnackbar();
@@ -30,7 +31,7 @@ const PurchaseSuccessView = () => {
 
             const config = {
                 method: 'post',
-                url: `${process.env.VITE_SERVER_URL}/api/orders`,
+                url: `${BACKEND_SERVER_URL}/api/orders`,
                 data: order,
                 headers: {
                     'Content-Type': 'application/json'

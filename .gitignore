@@ -26,3 +26,4 @@ dist-ssr
 node_modules/*
 .env
 .idea
+src/config/env.ts

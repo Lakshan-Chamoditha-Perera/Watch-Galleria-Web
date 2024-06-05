@@ -5,6 +5,7 @@ import { SnackbarProvider, useSnackbar } from 'notistack';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import { User } from '../../context/AuthContext';
+import {BACKEND_SERVER_URL} from "../../config/env";
 const ManageUser = () => {
     const { enqueueSnackbar } = useSnackbar();
     const [orderList, setOrderList] = useState([]);
@@ -312,7 +313,7 @@ const ManageUser = () => {
             }
         };
 
-        axios.put(`${process.env.VITE_SERVER_URL}/api/users/${user?.email}`, updatedUser).then(response => {
+        axios.put(`${BACKEND_SERVER_URL}/api/users/${user?.email}`, updatedUser).then(response => {
             console.log(response.data.data)
             updateUser(response.data.data);
             setUserDetails();
@@ -331,7 +332,7 @@ const ManageUser = () => {
             const config = {
                 method: "get",
                 // ${user.email}
-                url: `${process.env.VITE_SERVER_URL}/api/orders/${user.email}`
+                url: `${BACKEND_SERVER_URL}/api/orders/${user.email}`
             };
 
             await axios.request(config).then(response => {
@@ -374,7 +375,7 @@ const ManageUser = () => {
             formData.append('profileImage', file);
 
             try {
-                const response = await axios.post(`${process.env.VITE_SERVER_URL}/api/users/profile_image/${user.email}`, formData);
+                const response = await axios.post(`${BACKEND_SERVER_URL}/api/users/profile_image/${user.email}`, formData);
                 setUserProfile(response.data.profileUrl);
                 console.log(response.data);
                 if (response.status == 200) {

@@ -6,6 +6,7 @@ import { auth } from '../../config/firebase';
 import Swal from 'sweetalert2';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import axios from 'axios';
+import {BACKEND_SERVER_URL} from "../../config/env";
 
 const SignUpPage = () => {
     const navigate = useNavigate();
@@ -35,7 +36,7 @@ const SignUpPage = () => {
             console.log("----------------------------------------------------------------------------------------------")
             let username = user.displayName ? user.displayName : user.email;
 
-            await axios.post( process.env.VITE_SERVER_URL+'/api/auth/signup', {
+            await axios.post( BACKEND_SERVER_URL+'/api/auth/signup', {
                 email: email, 
                 password: password, 
                 name: username, 

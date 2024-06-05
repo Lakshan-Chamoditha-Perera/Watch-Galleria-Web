@@ -8,6 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { SnackbarProvider, useSnackbar } from 'notistack';
 import { WatchDto } from '../../../util/dto/watch.dto';
 import './addProductForm.css'
+import {BACKEND_SERVER_URL} from "../../../config/env";
 
 const ManageProductForm = () => {
     const [itemCode, setItemCode] = useState('');
@@ -132,7 +133,7 @@ const ManageProductForm = () => {
 
             const config = {
                 method: "post",
-                url: `${process.env.VITE_SERVER_URL}/api/watch`,
+                url: `${BACKEND_SERVER_URL}/api/watch`,
                 data: formData,
             };
 
@@ -149,7 +150,7 @@ const ManageProductForm = () => {
     //DELETE ITEM
     const deleteItem = () => {
         if (selectedItem) {
-            axios.delete( `${process.env.VITE_SERVER_URL}/api/watch/${itemCode}`).then((res) => {
+            axios.delete( `${BACKEND_SERVER_URL}/api/watch/${itemCode}`).then((res) => {
                 if (res.status === 200) {
                     enqueueSnackbar('Item deleted successfully', { variant: 'success' });
                     clearAll();
@@ -168,7 +169,7 @@ const ManageProductForm = () => {
 
     // GET ALL ITEMS
     const loadAllItemList = async () => {
-        await axios.get(`${process.env.VITE_SERVER_URL}/api/watch`).then((res) => {
+        await axios.get(`${BACKEND_SERVER_URL}/api/watch`).then((res) => {
             if (res.data.data) {
                 console.log(res.data.data);
                 const watchList = res.data.data.map((item) =>

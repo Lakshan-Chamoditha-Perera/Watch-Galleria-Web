@@ -19,11 +19,11 @@ import {
 import axios from "axios";
 // @ts-ignore
 import landingImg7 from "../../assets/landing_logo7.png";
-
 import Products from "../../components/cards/Products";
 import { WatchDto } from "../../util/dto/watch.dto";
 import NewsletterSignup from "../../components/newsletter/Newsletter";
 import { enqueueSnackbar, SnackbarProvider } from "notistack";
+import { BACKEND_SERVER_URL } from "../../config/env";
 
 const CommonView = () => {
     const [products, setProducts] = useState<WatchDto[]>([]);
@@ -38,7 +38,7 @@ const CommonView = () => {
 
     const loadAllProducts = () => {
         const config = {
-            method: "get", url:  process.env.VITE_SERVER_URL+"/api/watch",
+            method: "get", url:  BACKEND_SERVER_URL+"/api/watch",
         };
 
         axios.request(config).then((res) => {

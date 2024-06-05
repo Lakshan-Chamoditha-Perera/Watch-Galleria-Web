@@ -3,6 +3,7 @@ import { Button } from '@mui/material'
 import axios from 'axios'
 import { useAuth } from '../../context/AuthContext'
 import Swal from 'sweetalert2'
+import {BACKEND_SERVER_URL} from "../../config/env";
 
 const PayButton = ({ cartItem }) => {
     // @ts-ignore
@@ -17,7 +18,7 @@ const PayButton = ({ cartItem }) => {
         console.log('PayButton {} handleCheckout order', order)
         const config = {
             method: 'post',
-            url: `${process.env.VITE_SERVER_URL}/api/checkouts`,
+            url: BACKEND_SERVER_URL+'/api/checkouts',
             data: order,
             headers: {
                 'Content-Type': 'application/json'
