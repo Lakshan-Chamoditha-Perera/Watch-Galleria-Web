@@ -27,6 +27,4 @@ node_modules/*
 .env
 .idea
 .firebaserc
-dist
-build
 .github
