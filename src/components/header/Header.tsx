@@ -52,7 +52,7 @@ const Header: React.FC = () => {
     };
 
     return (
-        <nav className="header-container">
+        <nav className="fixed grid grid-cols-[1fr_5fr_2fr] items-center h-[8vh] w-screen lg:px-[13.33vw] px-[20px] text-black top-0 z-[1000] backdrop-filter backdrop-blur-[5px] backdrop-saturate-[200%] bg-white bg-opacity-[0.84] border-b border-gray-300 shadow-lg">
             <Link className="logo" 
                 to="/" 
                 onClick={() => navigate('/')}

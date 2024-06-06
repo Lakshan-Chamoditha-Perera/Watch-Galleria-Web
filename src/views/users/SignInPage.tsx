@@ -21,17 +21,46 @@ const SignInPage = () => {
     const handlePasswordChange = (e) => setPassword(e.target.value);
 
     const handleSignIn = async () => {
-        try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const user: User = userCredential.user;
-            // @ts-ignore    
-            login(user);
-            await Swal.fire('Welcome ' + user.displayName, 'You have successfully signed in with Google.', 'success');
-            navigate('/');
-        } catch (error) {
-            await Swal.fire('Error!', 'An error occurred while signing in with Google', 'error')
-
+        console.log("SignInPage : HandleSignInWithEmailAndPassword {}")
+        let url = BACKEND_SERVER_URL + '/api/auth/login';
+        const config = {
+            method: "post",
+            url,
+            data: {
+                "email": email,
+                "password": password
+            }
         }
+
+        try {
+            const res = await axios.request(config);
+            switch (res.status) {
+                case 200:
+                    const { user, token } = res.data.data;
+                    Swal.fire('Welcome ' + user.name + ', You have successfully signed in.', 'success');
+                    console.log(res.data);
+                    // Perform actions like storing the token and redirecting the user
+                    // login(user);
+                    // updateToken(token);
+                    // navigate('/');
+                    break;
+                case 400:
+                case 404:
+                case 401:
+                    Swal.fire('Error!', res.data.message, 'error');
+                    break;
+                default:
+                    Swal.fire('Error!', 'An unexpected error occurred.', 'error');
+                    break;
+            }
+        } catch (err) {
+            if (err.response) {
+                Swal.fire('Error!', err.response.data.message, 'error');
+            } else {
+                Swal.fire('Error!', 'Network Error', 'error');
+            }
+        }
+
     };
 
     const handleSignInWithGoogle = async (e) => {
@@ -44,10 +73,8 @@ const SignInPage = () => {
             if (result.user) {
                 // @ts-ignore
                 let accessToken = result.user.accessToken;
-                let url = BACKEND_SERVER_URL + '/api/auth/login'
-                console.log("-------------------------------------------")
-                console.log(url)
-                console.log("-------------------------------------------")
+                let url = BACKEND_SERVER_URL + '/api/auth/login';
+
                 const config = {
                     method: "post",
                     url,
@@ -84,9 +111,9 @@ const SignInPage = () => {
 
 
     return (
-        <div className='px-[13.33vw] pt-10 flex  lg:p-0'>
+        <div className='px-[20px] h-[95vh] pt-10 flex lg:p-0'>
             <Box flex={1} display="flex" justifyContent="center" alignItems="center">
-                <div className='w-full flex flex-col lg:justify-center  lg:h-fit lg:py-12 lg:max-w-[400px] lg:p-2' >
+                <div className='w-full flex flex-col lg:justify-center  lg:h-fit lg:max-w-[400px]' >
                     <div className='flex  flex-col' >
                         <div className="text-[40px] font-bold text-left "   >
                             Let's Sign you in to TIMELY
@@ -174,14 +201,15 @@ const SignInPage = () => {
                     </Typography>
                 </div>
             </Box>
-            {/* need to hide in sm */}
-            <div className=' hidden lg:flex w-[60%] h-[90vh]' >
+
+            <div className=' hidden lg:flex w-[60%]' >
                 <img
                     alt="Illustration"
                     className="object-cover lg:w-full lg:h-full "
                     src="https://images.unsplash.com/photo-1655693471966-153a0119caa6?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 />
             </div>
+
         </div>);
 };
 
