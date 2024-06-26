@@ -40,9 +40,9 @@ const SignInPage = () => {
                     Swal.fire('Welcome ' + user.name + ', You have successfully signed in.', 'success');
                     console.log(res.data);
                     // Perform actions like storing the token and redirecting the user
-                    // login(user);
-                    // updateToken(token);
-                    // navigate('/');
+                    login(user);
+                    updateToken(token);
+                    navigate('/');
                     break;
                 case 400:
                 case 404:

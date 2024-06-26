@@ -5,7 +5,7 @@ import { SnackbarProvider, useSnackbar } from 'notistack';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import { User } from '../../context/AuthContext';
-import {BACKEND_SERVER_URL} from "../../config/env";
+import { BACKEND_SERVER_URL } from "../../config/env";
 const ManageUser = () => {
     const { enqueueSnackbar } = useSnackbar();
     const [orderList, setOrderList] = useState([]);
@@ -19,7 +19,7 @@ const ManageUser = () => {
     const [postalCode, setPostalCode] = useState('');
     const [createdAt, setCreatedAt] = useState('');
     const [userProfile, setUserProfile] = useState('');
-    
+
 
     const stats = [
         { number: 5, label: 'All Bookings', percentage: '35.67%', color: '#3f51b5' },
@@ -367,6 +367,7 @@ const ManageUser = () => {
         }
     }
 
+    //UPLOAD PROFILE IMAGE
     const uploadProfileImage = async (e) => {
         enqueueSnackbar('Uploading image', { variant: 'info' });
         const file = e.target.files[0];
@@ -390,6 +391,7 @@ const ManageUser = () => {
         }
     };
 
+    
     const handleFileInputClick = (e: React.ChangeEvent<HTMLInputElement>) => {
         enqueueSnackbar('button action triggered', { variant: 'success' });
         const fileInput = document.getElementById('profile-image-upload');
@@ -403,9 +405,9 @@ const ManageUser = () => {
 
 
     return (
-        <div className=" px-[13.33vw] my-10 flex flex-col justify-center min-h-[80vh]">
+        <div className="px-[20px] lg:px-[13.33vw] my-10 flex flex-col justify-center min-h-[80vh]">
 
-            <Box className=' rounded  p-3 glass-card'>
+            <Box className=' rounded  p-3 lg:glass-card'>
                 <Typography fontWeight="bold" className="text-left " variant="h3"  >
                     Profile
                     <Typography className="text-left" variant="subtitle1" gutterBottom>
@@ -420,8 +422,9 @@ const ManageUser = () => {
                 <Grid container className='justify-between ' spacing={3} sx={{ minHeight: 'fit' }}>
                     {/* Profile Section */}
                     <Grid item xs={12} md={4}>
-                        <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3 }}
-
+                        <div
+                            //  sx={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3 }}
+                            className="h-full flex flex-col items-center lg:p-3 py-4"
                         >
                             <Avatar
                                 alt={userName}
@@ -435,12 +438,12 @@ const ManageUser = () => {
                                 style={{ display: 'none' }}
                                 id="profile-image-upload"
                             />
-                           
+
                             <Button onClick={handleFileInputClick}>
                                 Upload Profile Image
                             </Button>
 
-                            <Typography  gutterBottom>
+                            <Typography gutterBottom>
                                 {userName}
                             </Typography>
 
@@ -473,7 +476,7 @@ const ManageUser = () => {
                                     }}
                                 />
                             </CardContent>
-                        </Card>
+                        </div>
                     </Grid>
 
 
@@ -496,7 +499,7 @@ const ManageUser = () => {
                             </Grid>
                         ))}
                     </Grid>  */}
-                        <Card sx={{ mb: 3 }}>
+                        <div className='lg:border rounded' >
                             <CardContent>
 
                                 <Typography fontWeight="bold" variant="h5" component="h2" gutterBottom
@@ -573,9 +576,9 @@ const ManageUser = () => {
                                     </Box>
                                 </Box>
                             </CardContent>
-                        </Card>
+                        </div>
 
-                        <Card>
+                        <div className='lg:border border'>
                             <CardContent>
 
                                 <Typography fontWeight="bold" variant="h5" component="h2" gutterBottom
@@ -592,24 +595,8 @@ const ManageUser = () => {
                                 {
 
                                     (orderList && orderList.length > 0) ? orderList.map((appointment, index) => (
-                                        <Box
-                                            key={index}
-                                            className=' py-2'
-                                        >
-                                            <OrderAccordian element={appointment} />
-                                            {/* <Box>
-                                        <Typography variant="body1">{appointment.date}</Typography>
-                                        <Typography variant="body2" color="textSecondary">{appointment.service}</Typography>
-                                    </Box>
-                                    <Typography variant="body2" sx={{ color: appointment.color }}>
-                                        {appointment.status}
-                                    </Typography>
-                                    <Box sx={{ textAlign: 'right' }}>
-                                        <Typography variant="body1">{appointment.cost}</Typography>
-                                        <Typography variant="body2" color="textSecondary">{appointment.rate}</Typography>
-                                    </Box> */}
 
-                                        </Box>
+                                        <OrderAccordian element={appointment} />
 
                                     )) : <Card className='' sx={{ maxWidth: 345, textAlign: 'center', padding: 2 }}>
                                         <CardMedia
@@ -634,7 +621,7 @@ const ManageUser = () => {
                                 }
 
                             </CardContent>
-                        </Card>
+                        </div>
                     </Grid>
 
                 </Grid>

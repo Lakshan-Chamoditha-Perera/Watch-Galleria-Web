@@ -15,7 +15,8 @@ import { ManageAccounts } from '@mui/icons-material';
 import ManageUserPage from './views/users/ManageUserPage';
 import PurchaseSuccess from './views/watches/purchase_order/PurchaseSuccess';
 import NotFoundPage from './views/util/NotFoundPage';
-
+import SalesView from './views/users/Sales';
+import Sales from './views/users/Sales';
 export const Context = createContext(null);
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
                         <Route path="/purchases" element={<PurchaseOrders />} />
                         <Route path="/profile" element={<ManageUserPage />} />
                         <Route path="/purchases/success" element={<PurchaseSuccess />} />
+                        <Route path="/sales" element={<Sales />} />
                         <Route path="*" element={<NotFoundPage />} />
                     </Routes>
                     <Footer />

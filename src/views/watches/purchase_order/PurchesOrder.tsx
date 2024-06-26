@@ -43,7 +43,7 @@ const OrderForm = () => {
     const originalPrice = totalPrice + savings;
 
     return (
-        <div className=' px-[13.33vw] my-10 flex flex-col justify-center' >
+        <div className=' px-[20px] lg:px-[13.33vw] my-10 flex flex-col justify-center min-h-[80vh]' >
 
             <Box className=' rounded  p-3 glass-card'>
                 <Typography fontWeight="bold" className="text-left " variant="h3"  >
@@ -52,10 +52,7 @@ const OrderForm = () => {
             </Box>
 
             <Box component="form" className="mt-3 rounded" noValidate autoComplete="off">
-
                 <Grid container className='justify-between ' spacing={3} sx={{ minHeight: 'fit' }}>
-
-
                     <Grid item xs={12} md={9}>
                         <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3 }} >
                             <Table sx={{}} aria-label="simple table">
@@ -81,37 +78,38 @@ const OrderForm = () => {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {cart.map((item: WatchDto) => (<TableRow key={item.itemCode}
-                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                        <TableCell align="left">
-                                            <Avatar variant="square" src={item.imageUrlList[0]} alt={item.productName}
-                                                sx={{ width: 100, height: 100, borderRadius: 1 }} />
-                                        </TableCell>
-                                        <TableCell align="left">
-                                            <Typography variant="body1"
-                                                fontWeight="bold">{item.productName}</Typography>
-                                            <Typography variant="body2">{item.description}</Typography>
-                                        </TableCell>
-                                        <TableCell align="right">${item.price.toFixed(2)}</TableCell>
-                                        <TableCell align="right">
-                                            <IconButton onClick={() => handleQuantityChange(item, -1)}
-                                                disabled={item.addToCartQuantity <= 1}>
-                                                <Remove />
-                                            </IconButton>
-                                            {item.addToCartQuantity}
-                                            <IconButton onClick={() => handleQuantityChange(item, 1)}
-                                                disabled={item.addToCartQuantity == item.quantity}>
-                                                <Add />
-                                            </IconButton>
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            <IconButton onClick={() => handleRemoveItem(item.itemCode)}>
-                                                <Delete />
-                                            </IconButton>
-                                            <Button onClick={() => handleRemoveItem(item.itemCode)}>Remove</Button>
-                                        </TableCell>
+                                    {cart.map((item: WatchDto) => (
+                                        <TableRow key={item.itemCode} className=''
+                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                                            <TableCell align="left">
+                                                <Avatar variant="square" src={item.imageUrlList[0]} alt={item.productName}
+                                                    sx={{ width: 100, height: 100, borderRadius: 1 }} />
+                                            </TableCell>
+                                            <TableCell align="left">
+                                                <Typography variant="body1"
+                                                    fontWeight="bold">{item.productName}</Typography>
+                                                <Typography variant="body2">{item.description}</Typography>
+                                            </TableCell>
+                                            <TableCell align="right">${item.price.toFixed(2)}</TableCell>
+                                            <TableCell align="right">
+                                                <IconButton onClick={() => handleQuantityChange(item, -1)}
+                                                    disabled={item.addToCartQuantity <= 1}>
+                                                    <Remove />
+                                                </IconButton>
+                                                {item.addToCartQuantity}
+                                                <IconButton onClick={() => handleQuantityChange(item, 1)}
+                                                    disabled={item.addToCartQuantity == item.quantity}>
+                                                    <Add />
+                                                </IconButton>
+                                            </TableCell>
+                                            <TableCell align="right">
+                                                <IconButton onClick={() => handleRemoveItem(item.itemCode)}>
+                                                    <Delete />
+                                                </IconButton>
+                                                <Button onClick={() => handleRemoveItem(item.itemCode)}>Remove</Button>
+                                            </TableCell>
 
-                                    </TableRow>
+                                        </TableRow>
 
                                     ))}
                                 </TableBody>

@@ -31,62 +31,78 @@ const SignUpPage = () => {
         setRePassword('');
     }
 
-    const validate=()=>{
-        // check email with regex
-        let regexp = new RegExp(/^(([^<>()$$$$\\.,;:\s@"]+(\.[^<>()$$$$\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
-        if (!regexp.test(email)) {
-            Swal.fire('Error!', 'Invalid email!', 'error');
-            return false;
-        }
-        // check password length
-        if (password.length < 6) {
-            Swal.fire('Error!', 'Password must be at least 6 characters long!', 'error');
+    const validate = () => {
+        let emailRegexp = new RegExp(/^(([^<>()$$$$\\.,;:\s@"]+(\.[^<>()$$$$\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+
+        if (!emailRegexp.test(email)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid email address',
+                text: 'Please enter a valid email address!',
+
+            });
             return false;
         }
 
-        if(rePassword.length < 6){
-            Swal.fire('Error!', 'Password must be at least 6 characters long!', 'error');
+        if (password.length < 6) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid password',
+                text: 'Password must be at least 6 characters long!',
+
+            });
+            return false;
+        }
+
+        if (rePassword.length < 6) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid confirm password',
+                text: 'Confirm password must be at least 6 characters long!',
+
+            });
             return false;
         }
 
         if (password !== rePassword) {
-            Swal.fire('Error!', 'Passwords do not match', 'error');
-            return;
+            Swal.fire({
+                icon: 'error',
+                title: 'Passwords do not match',
+                text: 'Please re-enter the passwords!',
+
+            });
+            return false;
         }
 
         return true;
-    }
+    };
 
     const registerUser = async (e) => {
         e.preventDefault();
-        if(!validate()){
-            return;
-        }
+        if (validate()) {
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                let username = user.displayName ? user.displayName : user.email;
 
-        try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-            console.log(user)
-            let username = user.displayName ? user.displayName : user.email;
-
-            await axios.post(BACKEND_SERVER_URL + '/api/auth/signup', {
-                email: email,
-                password: password,
-                name: username,
-                photoURL: user.photoURL ? user.photoURL : ""
-            }).then((res) => {
-                clearFields();
-                Swal.fire('Success!', 'Account created successfully!', 'success');
-            }).catch((err) => {
-                console.log(err.response.data)
-                Swal.fire(err.response.data.message, 'Error!', 'error');
-            });
-        } catch (error) {
-            if (error.code === 'auth/email-already-in-use') {
-                Swal.fire('Timely account already exists with this email!', 'Please sign in', 'error');
-                return;
+                await axios.post(`${BACKEND_SERVER_URL}/api/auth/signup`, {
+                    email: email,
+                    password: password,
+                    name: username,
+                    photoURL: user.photoURL ? user.photoURL : ""
+                }).then((res) => {
+                    clearFields();
+                    Swal.fire('Success!', 'Account created successfully!', 'success');
+                }).catch((err) => {
+                    Swal.fire('Error!', err.response.data.message, 'error');
+                });
+            } catch (error) {
+                if (error.code === 'auth/email-already-in-use') {
+                    Swal.fire('Timely account already exists with this email!', 'Please sign in', 'error');
+                    return;
+                }
+                Swal.fire('Error!', error.message, 'error');
             }
-            Swal.fire('Error!', error.message, 'error');
         }
     };
 

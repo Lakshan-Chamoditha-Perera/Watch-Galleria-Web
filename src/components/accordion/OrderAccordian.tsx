@@ -20,7 +20,7 @@ export default function OrderAccordian(props) {
 `;
 
   return (
-    <Accordion>
+    <Accordion className=''>
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         aria-controls="panel1-content"
@@ -34,18 +34,18 @@ export default function OrderAccordian(props) {
       >
 
         <div className="gap-3 border w-full  flex flex-row text-black">
-          <div className="text-[18px]  border text-black">
+          <div className="text-[18px] hidden  border text-black">
             Order Id
           </div>
 
           <div className="text-[10px] border justify-around flex items-center text-black">
             {
-              element._id
+              new Date(element.createdAt).toDateString().substring(0, 10)
             }
           </div>
         </div>
-        <Typography className="pr-4">{new Date(element.createdAt).toDateString()}</Typography>
-        <Typography className="pr-4">${Number(element.totalPrice).toFixed(2)}</Typography>
+        <Typography className="pr-4 lg:flex hidden">{new Date(element.createdAt).toDateString()}</Typography>
+        <Typography className="pr-4 align-right text">${Number(element.totalPrice).toFixed(2)}</Typography>
       </AccordionSummary>
 
       <CssBaseline />
