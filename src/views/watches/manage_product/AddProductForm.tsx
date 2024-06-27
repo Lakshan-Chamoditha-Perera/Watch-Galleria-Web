@@ -8,7 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { SnackbarProvider, useSnackbar } from 'notistack';
 import { WatchDto } from '../../../util/dto/watch.dto';
 import './addProductForm.css'
-import {BACKEND_SERVER_URL} from "../../../config/env";
+import { BACKEND_SERVER_URL } from "../../../config/env";
 
 const ManageProductForm = () => {
     const [itemCode, setItemCode] = useState('');
@@ -135,6 +135,9 @@ const ManageProductForm = () => {
                 method: "post",
                 url: `${BACKEND_SERVER_URL}/api/watch`,
                 data: formData,
+                headers: {
+                    "Authorization": "Bearer " + sessionStorage.getItem('token')
+                }
             };
 
             axios.request(config).then((res) => {
@@ -150,7 +153,15 @@ const ManageProductForm = () => {
     //DELETE ITEM
     const deleteItem = () => {
         if (selectedItem) {
-            axios.delete( `${BACKEND_SERVER_URL}/api/watch/${itemCode}`).then((res) => {
+            const config = {
+                method: "delete",
+                url: `${BACKEND_SERVER_URL}/api/watch/${selectedItem.itemCode}`,
+                headers: {
+                    "Authorization": "Bearer " + sessionStorage.getItem('token')
+                }
+            };
+
+            axios.request(config).then((res) => {
                 if (res.status === 200) {
                     enqueueSnackbar('Item deleted successfully', { variant: 'success' });
                     clearAll();
@@ -169,7 +180,16 @@ const ManageProductForm = () => {
 
     // GET ALL ITEMS
     const loadAllItemList = async () => {
-        await axios.get(`${BACKEND_SERVER_URL}/api/watch`).then((res) => {
+
+        let config = {
+            method: "get",
+            url: `${BACKEND_SERVER_URL}/api/watch`,
+            headers: {
+                "Authorization": "Bearer " + sessionStorage.getItem('token')
+            }
+        };
+
+        await axios.request(config).then((res) => {
             if (res.data.data) {
                 console.log(res.data.data);
                 const watchList = res.data.data.map((item) =>

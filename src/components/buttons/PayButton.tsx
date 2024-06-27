@@ -21,9 +21,11 @@ const PayButton = ({ cartItem }) => {
             url: BACKEND_SERVER_URL+'/api/checkouts',
             data: order,
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
             }
         };
+
 
         axios.request(config)
             .then(res => {

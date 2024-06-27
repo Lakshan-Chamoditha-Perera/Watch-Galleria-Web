@@ -42,6 +42,11 @@ const CommonView = () => {
         console.log("CommonView : loadAllProducts {}")
         const config = {
             method: "get", url: BACKEND_SERVER_URL + "/api/watch",
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + sessionStorage.getItem('token')
+            }
+
         };
 
         axios.request(config).then((res) => {
